@@ -1,0 +1,92 @@
+# .github/workflows/ci.yml
+
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*.*.*'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    name: Lint & Type Check
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9', '3.10', '3.11']
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dev dependencies
+        run: pip install --upgrade pip && pip install ".[dev]"
+
+      - name: Black formatting check
+        run: black --check .
+
+      - name: Flake8 lint
+        run: flake8 tka11y tests
+
+      - name: MyPy type checking
+        run: mypy tka11y
+
+  test:
+    name: Run Tests
+    needs: lint
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9', '3.10', '3.11']
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dev dependencies
+        run: pip install --upgrade pip && pip install ".[dev]"
+
+      - name: Generate type stubs
+        run: python scripts/generate_stubs.py
+
+      - name: Run pytest
+        run: pytest --maxfail=1 --disable-warnings -q
+
+  publish:
+    name: Publish to PyPI
+    needs: [lint, test]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install build tools
+        run: pip install --upgrade pip build twine
+
+      - name: Build distributions
+        run: python -m build --sdist --wheel --outdir dist
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@v1.4.3
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
