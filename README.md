@@ -1,6 +1,6 @@
-🧭 tk-a11y
+🧭 tkaria11y
 
-tk-a11y is a Python framework for building fully accessible Tkinter applications—offering ARIA-style metadata, automatic text-to-speech feedback, keyboard navigation, high-contrast theming, and dyslexic-friendly fonts.
+tkaria11y is a Python framework for building fully accessible Tkinter applications—offering ARIA-style metadata, automatic text-to-speech feedback, keyboard navigation, high-contrast theming, and dyslexic-friendly fonts.
 
 Whether you're crafting GUIs for the visually impaired, dyslexic users, screen-reader users, or simply building inclusive software, tk-a11y gives you a robust set of tools with minimal boilerplate.
 
@@ -31,31 +31,13 @@ pip install tk-a11y
 Install optional dev tools (testing, type checking, stub generation):
 
 `bash
-pip install "tk-a11y[dev]"
+pip install "tkaria11y[dev]"
 `
 
 ---
 
 🧪 Quickstart
 
-`python
-from tk_a11y import AccessibleApp
-from tk_a11y.widgets import AccessibleButton, AccessibleEntry
-from tka11y.themes import setdyslexic_font
-
-app = AccessibleApp(title="Login", high_contrast=True, scaling=1.2)
-setdyslexicfont(app)
-
-username = AccessibleEntry(app, accessible_name="Username input")
-username.pack(padx=10, pady=5)
-
-submit = AccessibleButton(app, text="Submit", accessible_name="Submit button")
-submit.pack(padx=10, pady=5)
-
-app.mainloop()
-`
-
----
 
 🔍 Runtime Inspector
 
