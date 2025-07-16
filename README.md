@@ -1,5 +1,7 @@
 🧭 tkaria11y
 
+[![CodeFactor](https://www.codefactor.io/repository/github/stntg/tkaria11y/badge)](https://www.codefactor.io/repository/github/stntg/tkaria11y)
+
 tkaria11y is a Python framework for building fully accessible Tkinter applications—offering ARIA-style metadata, automatic text-to-speech feedback, keyboard navigation, high-contrast theming, and dyslexic-friendly fonts.
 
 Whether you're crafting GUIs for the visually impaired, dyslexic users, screen-reader users, or simply building inclusive software, tk-a11y gives you a robust set of tools with minimal boilerplate.
