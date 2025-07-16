@@ -35,10 +35,10 @@ jobs:
         run: black --check .
 
       - name: Flake8 lint
-        run: flake8 tka11y tests
+        run: flake8 tkaria11y tests
 
       - name: MyPy type checking
-        run: mypy tka11y
+        run: mypy tkaria11y
 
   test:
     name: Run Tests
