@@ -14,7 +14,7 @@ def test_high_contrast_theme_apply():
 
     # Add some child widgets
     button = tk.Button(root, text="Test")
-    label = tk.Label(root, text="Test Label")
+    tk.Label(root, text="Test Label")
 
     # Apply high contrast theme
     HighContrastTheme.apply(root)
@@ -22,7 +22,8 @@ def test_high_contrast_theme_apply():
     # Force update
     root.update()
 
-    # Check that colors were applied (may not work on all systems due to OS theme restrictions)
+    # Check that colors were applied (may not work on all systems due to OS
+    # theme restrictions)
     # On Windows, system themes might override root window colors
     try:
         assert root.cget("bg") == HighContrastTheme.COLORS["bg"]
@@ -58,10 +59,11 @@ def test_set_dyslexic_font():
     root = tk.Tk()
 
     # Add some child widgets
-    button = tk.Button(root, text="Test")
-    label = tk.Label(root, text="Test Label")
+    tk.Button(root, text="Test")
+    tk.Label(root, text="Test Label")
 
-    # Apply dyslexic font (will fall back to Arial since OpenDyslexic likely not installed)
+    # Apply dyslexic font (will fall back to Arial since OpenDyslexic
+    # likely not installed)
     set_dyslexic_font(root, family="Arial", size=14)
 
     # Check that font was applied (at least to root)

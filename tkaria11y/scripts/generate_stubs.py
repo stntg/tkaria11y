@@ -9,7 +9,6 @@ saves manual updates when you add/remove widgets, and keeps MyPy/IDE
 autocomplete in sync.
 """
 
-import os
 import subprocess
 import sys
 from pathlib import Path
@@ -52,7 +51,8 @@ def main() -> None:
     for i, (name, (role, base)) in enumerate(widget_map.items()):
         lines.append(f"class Accessible{name}(tk.{base.__name__}):\n")
         lines.append(
-            f'    def __init__(self, master=None, *, accessible_name: str = "", **kw) -> None: ...\n'
+            '    def __init__(self, master=None, *, '
+            'accessible_name: str = "", **kw) -> None: ...\n'
         )
         lines.append("\n")
         lines.append("    accessible_name: str\n")

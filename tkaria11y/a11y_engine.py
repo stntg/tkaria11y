@@ -8,7 +8,6 @@ Background TTS queue using pyttsx3, with lazy init, voice/rate/volume controls.
 import threading
 import queue
 import atexit
-import weakref
 import pyttsx3
 from typing import Optional, List
 import tkinter as tk
@@ -37,7 +36,8 @@ class TTSEngine:
         atexit.register(self.shutdown)
 
     def _init_engine(self) -> None:
-        """Initialize the TTS engine with error handling - must be called from main thread"""
+        """Initialize the TTS engine with error handling - must be called from
+        main thread"""
         if threading.get_ident() != self._main_thread_id:
             return  # Don't initialize from worker thread
 

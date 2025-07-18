@@ -113,7 +113,8 @@ def launch_inspector(root: tk.Tk) -> tk.Toplevel:
     return insp
 
 
-""" Integrating this inspector you would typically do the following, in the AccessibleApp constructor:
+""" Integrating this inspector you would typically do the following, in the
+AccessibleApp constructor:
 
 from .utils_inspector import launch_inspector
 
@@ -130,10 +131,14 @@ usage:
 
 TODO:
 1. Hook generate_stubs.py into your pyproject.toml or CI pipeline
-2. Refine the inspector: add an editable panel to tweak accessible_* attributes on the fly
-3. Extend highlighting to include hover events (<Enter>) and custom style guides
-4. Write tests to ensure your stub generator and inspector cover all _WIDGET_MAP entries
+2. Refine the inspector: add an editable panel to tweak accessible_*
+   attributes on the fly
+3. Extend highlighting to include hover events (<Enter>) and custom
+   style guides
+4. Write tests to ensure your stub generator and inspector cover all
+   _WIDGET_MAP entries
 
-With automated stubs and a live inspector, your framework is as ergonomic to develop against as it is potent for end-users.
+With automated stubs and a live inspector, your framework is as ergonomic to
+develop against as it is potent for end-users.
 
 """

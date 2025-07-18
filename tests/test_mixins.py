@@ -1,6 +1,5 @@
 # tests/test_mixins.py
 
-import pytest
 import tkinter as tk
 from tkaria11y.mixins import AccessibleMixin
 

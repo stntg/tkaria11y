@@ -1,4 +1,3 @@
-import pytest
 import tkinter as tk
 from tkaria11y.widgets import (
     AccessibleButton,

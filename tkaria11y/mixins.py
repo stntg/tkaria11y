@@ -28,9 +28,9 @@ class AccessibleMixin:
 
         # Bind focus event for TTS
         if accessible_name:
-            self.bind("<FocusIn>", self._on_focus_in, add="+")  # type: ignore[attr-defined]
+            self.bind("<FocusIn>", self._on_focus_in, add="+")  # type: ignore
         # Optional: mouse hover
-        self.bind("<Enter>", self._on_mouse_enter, add="+")  # type: ignore[attr-defined]
+        self.bind("<Enter>", self._on_mouse_enter, add="+")  # type: ignore
 
     def _on_focus_in(self, event: tk.Event) -> None:
         label = self.accessible_name

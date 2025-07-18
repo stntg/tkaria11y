@@ -5,7 +5,6 @@ Pytest configuration and fixtures for tkaria11y tests.
 import pytest
 import tkinter as tk
 import gc
-import os
 
 
 def pytest_configure(config):

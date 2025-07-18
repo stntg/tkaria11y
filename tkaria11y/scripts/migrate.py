@@ -4,16 +4,15 @@ tkaria11y-migrate
 CLI tool to codemod an existing Tk codebase into tkaria11y widgets.
 """
 
-import sys
 import pathlib
 import click
-import ast
 import re
-from typing import Tuple, Optional, List, Dict, Any
+from typing import Tuple, Optional, List
 
 
 class TkinterToA11yTransformer:
-    """Simple text-based transformer to convert tkinter widgets to accessible versions"""
+    """Simple text-based transformer to convert tkinter widgets to accessible
+    versions"""
 
     def __init__(self, interactive: bool = False, config: Optional[str] = None):
         self.interactive = interactive
@@ -40,7 +39,8 @@ class TkinterToA11yTransformer:
         }
 
     def _find_first_param_comma(self, line: str, start_pos: int) -> int:
-        """Find the position of the first comma that separates parameters (not inside nested structures)"""
+        """Find the position of the first comma that separates parameters
+        (not inside nested structures)"""
         paren_depth = 0
         bracket_depth = 0
         brace_depth = 0
@@ -199,7 +199,8 @@ def main(paths: Tuple[str, ...], interactive: bool, config: Optional[str]) -> No
 
       tkaria11y-migrate ./myapp --interactive
     """
-    from .generate_stubs import main as generate_stubs  # if you want to stub afterwards
+    # from .generate_stubs import main as generate_stubs  # if you want to
+    # stub afterwards
 
     # 1. collect all .py files under each path
     files: List[pathlib.Path] = []

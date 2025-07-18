@@ -1,6 +1,5 @@
 # tests/test_a11y_engine.py
 
-import pytest
 import time
 from tkaria11y.a11y_engine import TTSEngine, speak, tts
 

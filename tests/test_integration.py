@@ -60,8 +60,8 @@ def test_theme_integration():
         pytest.skip(f"GUI not available: {e}")
 
     # Create widgets
-    button = AccessibleButton(app, text="Test", accessible_name="Test button")
-    entry = AccessibleEntry(app, accessible_name="Test entry")
+    AccessibleButton(app, text="Test", accessible_name="Test button")
+    AccessibleEntry(app, accessible_name="Test entry")
 
     # Apply theme
     HighContrastTheme.apply(app)

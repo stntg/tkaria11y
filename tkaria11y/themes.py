@@ -7,7 +7,7 @@ Theme utilities for accessibility:
 """
 
 import tkinter as tk
-from typing import Dict, Any, Optional
+from typing import Dict
 import weakref
 
 
@@ -90,7 +90,8 @@ class HighContrastTheme:
 
             for option in options_to_store:
                 try:
-                    # This is tricky - Tkinter doesn't provide easy access to current option values
+                    # This is tricky - Tkinter doesn't provide easy access to
+                    # current option values
                     # We'll store the standard system colors as defaults
                     if "Background" in option:
                         cls._original_options[root][option] = cls.STANDARD_COLORS["bg"]
@@ -303,13 +304,17 @@ class HighContrastTheme:
             # Selection colors
             if "selectbackground" in config_options:
                 try:
-                    widget.configure(selectbackground=cls.COLORS["select_bg"])  # type: ignore[call-arg]
+                    widget.configure(
+                        selectbackground=cls.COLORS["select_bg"]
+                    )  # type: ignore[call-arg]
                 except tk.TclError:
                     pass
 
             if "selectforeground" in config_options:
                 try:
-                    widget.configure(selectforeground=cls.COLORS["select_fg"])  # type: ignore[call-arg]
+                    widget.configure(
+                        selectforeground=cls.COLORS["select_fg"]
+                    )  # type: ignore[call-arg]
                 except tk.TclError:
                     pass
 
