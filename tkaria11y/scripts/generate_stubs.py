@@ -51,7 +51,7 @@ def main() -> None:
     for i, (name, (role, base)) in enumerate(widget_map.items()):
         lines.append(f"class Accessible{name}(tk.{base.__name__}):\n")
         lines.append(
-            '    def __init__(self, master=None, *, '
+            "    def __init__(self, master=None, *, "
             'accessible_name: str = "", **kw) -> None: ...\n'
         )
         lines.append("\n")
