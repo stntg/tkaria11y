@@ -16,3 +16,7 @@ Mac
 
 Logs
 *.log
+
+local development files
+dev_docs/
+.zencoder/

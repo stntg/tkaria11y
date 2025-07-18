@@ -56,7 +56,7 @@ Press F2 to open the built-in accessibility inspector:
 Generate Type Stubs
 
 `bash
-python scripts/generate_stubs.py
+tkaria11y-stubgen
 `
 
 Creates stubs/widgets.pyi for type checkers and IDEs.
@@ -81,7 +81,7 @@ flake8 .
 Automatically upgrade your Tkinter codebase to accessible widgets:
 
 `bash
-tka11y-migrate path/to/your/app.py --interactive
+tkaria11y-migrate path/to/your/app.py --interactive
 `
 
 Supports auto-imports, accessible_name inference, and config-based overrides.

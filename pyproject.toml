@@ -18,6 +18,7 @@ classifiers = [
 
 dependencies = [
   "pyttsx3",
+  "click",
 ]
 
 [project.optional-dependencies]
@@ -31,4 +32,12 @@ dev = [
 ]
 
 [project.scripts]
-tka11y-migrate = "scripts.generate_stubs:main"
+tkaria11y-migrate = "tkaria11y.scripts.migrate:main"
+tkaria11y-stubgen = "tkaria11y.scripts.generate_stubs:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["tkaria11y*"]
+
+[tool.setuptools.package-data]
+tkaria11y = ["py.typed", "*.pyi", "stubs/*.pyi"]

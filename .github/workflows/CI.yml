@@ -60,7 +60,7 @@ jobs:
         run: pip install --upgrade pip && pip install ".[dev]"
 
       - name: Generate type stubs
-        run: python scripts/generate_stubs.py
+        run: tkaria11y-stubgen
 
       - name: Run pytest
         run: pytest --maxfail=1 --disable-warnings -q

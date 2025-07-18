@@ -57,7 +57,7 @@ Setting Up Your Environment
    `
 3. Generate initial type stubs:
    `bash
-   python scripts/generate_stubs.py
+   python -m tkaria11y.scripts.generate_stubs
    `
 
 ---
@@ -84,7 +84,7 @@ Code Style
   `
 - Lint with flake8 and fix any errors:
   `bash
-  flake8 tka11y tests
+  flake8 tkaria11y tests
   `
 
 Type Checking
@@ -92,7 +92,7 @@ Type Checking
 - Keep type hints up to date in code and stubs.  
 - Run mypy in strict mode:
   `bash
-  mypy tka11y
+  mypy tkaria11y
   `
 
 Testing
@@ -108,9 +108,9 @@ Stub Generation
 
 - Whenever WIDGETMAP changes, regenerate stubs:
   `bash
-  python scripts/generate_stubs.py
+  python -m tkaria11y.scripts.generate_stubs
   `
-- Ensure tka11y/stubs/widgets.pyi matches the mapped widgets.
+- Ensure tkaria11y/stubs/widgets.pyi matches the mapped widgets.
 
 Documentation Updates
 
@@ -144,7 +144,7 @@ This project follows the Contributor Covenant Code of Conduct. By participating,
 
 Release Process
 
-1. Bump version in tka11y/init.py and pyproject.toml.  
+1. Bump version in tkaria11y/__init__.py and pyproject.toml.  
 2. Tag the commit:  
    `bash
    git tag vX.Y.Z
