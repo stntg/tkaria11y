@@ -9,6 +9,7 @@ saves manual updates when you add/remove widgets, and keeps MyPy/IDE
 autocomplete in sync.
 """
 
+# import os
 import subprocess
 import sys
 from pathlib import Path

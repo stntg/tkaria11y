@@ -4,8 +4,10 @@ tkaria11y-migrate
 CLI tool to codemod an existing Tk codebase into tkaria11y widgets.
 """
 
+# import sys
 import pathlib
 import click
+# import ast
 import re
 from typing import Tuple, Optional, List
 
