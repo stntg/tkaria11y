@@ -321,33 +321,43 @@ class HighContrastTheme:
             # Active colors
             if "activebackground" in config_options:
                 try:
-                    widget.configure(activebackground=cls.COLORS["active_bg"])  # type: ignore[call-arg]
+                    widget.configure(
+                        activebackground=cls.COLORS["active_bg"]
+                    )  # type: ignore[call-arg]
                 except tk.TclError:
                     pass
 
             if "activeforeground" in config_options:
                 try:
-                    widget.configure(activeforeground=cls.COLORS["active_fg"])  # type: ignore[call-arg]
+                    widget.configure(
+                        activeforeground=cls.COLORS["active_fg"]
+                    )  # type: ignore[call-arg]
                 except tk.TclError:
                     pass
 
             # Insert/cursor color
             if "insertbackground" in config_options:
                 try:
-                    widget.configure(insertbackground=cls.COLORS["insert_bg"])  # type: ignore[call-arg]
+                    widget.configure(
+                        insertbackground=cls.COLORS["insert_bg"]
+                    )  # type: ignore[call-arg]
                 except tk.TclError:
                     pass
 
             # Disabled colors
             if "disabledforeground" in config_options:
                 try:
-                    widget.configure(disabledforeground=cls.COLORS["disabled_fg"])  # type: ignore[call-arg]
+                    widget.configure(
+                        disabledforeground=cls.COLORS["disabled_fg"]
+                    )  # type: ignore[call-arg]
                 except tk.TclError:
                     pass
 
             if "disabledbackground" in config_options:
                 try:
-                    widget.configure(disabledbackground=cls.COLORS["disabled_bg"])  # type: ignore[call-arg]
+                    widget.configure(
+                        disabledbackground=cls.COLORS["disabled_bg"]
+                    )  # type: ignore[call-arg]
                 except tk.TclError:
                     pass
 
@@ -355,28 +365,36 @@ class HighContrastTheme:
             if widget_class == "Entry":
                 if "fieldbackground" in config_options:
                     try:
-                        widget.configure(fieldbackground=cls.COLORS["bg"])  # type: ignore[call-arg]
+                        widget.configure(
+                            fieldbackground=cls.COLORS["bg"]
+                        )  # type: ignore[call-arg]
                     except tk.TclError:
                         pass
 
             elif widget_class == "Scale":
                 if "troughcolor" in config_options:
                     try:
-                        widget.configure(troughcolor=cls.COLORS["active_bg"])  # type: ignore[call-arg]
+                        widget.configure(
+                            troughcolor=cls.COLORS["active_bg"]
+                        )  # type: ignore[call-arg]
                     except tk.TclError:
                         pass
 
             elif widget_class in ["Checkbutton", "Radiobutton"]:
                 if "selectcolor" in config_options:
                     try:
-                        widget.configure(selectcolor=cls.COLORS["select_bg"])  # type: ignore[call-arg]
+                        widget.configure(
+                            selectcolor=cls.COLORS["select_bg"]
+                        )  # type: ignore[call-arg]
                     except tk.TclError:
                         pass
 
             elif widget_class == "Scrollbar":
                 if "troughcolor" in config_options:
                     try:
-                        widget.configure(troughcolor=cls.COLORS["active_bg"])  # type: ignore[call-arg]
+                        widget.configure(
+                            troughcolor=cls.COLORS["active_bg"]
+                        )  # type: ignore[call-arg]
                     except tk.TclError:
                         pass
 
@@ -384,12 +402,16 @@ class HighContrastTheme:
                 # Menus need special handling
                 if "activebackground" in config_options:
                     try:
-                        widget.configure(activebackground=cls.COLORS["select_bg"])  # type: ignore[call-arg]
+                        widget.configure(
+                            activebackground=cls.COLORS["select_bg"]
+                        )  # type: ignore[call-arg]
                     except tk.TclError:
                         pass
                 if "activeforeground" in config_options:
                     try:
-                        widget.configure(activeforeground=cls.COLORS["select_fg"])  # type: ignore[call-arg]
+                        widget.configure(
+                            activeforeground=cls.COLORS["select_fg"]
+                        )  # type: ignore[call-arg]
                     except tk.TclError:
                         pass
 
@@ -582,46 +604,60 @@ class HighContrastTheme:
             # Restore selection colors
             if "selectbackground" in config_options:
                 try:
-                    widget.configure(selectbackground=standard_colors["select_bg"])  # type: ignore[call-arg]
+                    widget.configure(
+                        selectbackground=standard_colors["select_bg"]
+                    )  # type: ignore[call-arg]
                 except tk.TclError:
                     pass
 
             if "selectforeground" in config_options:
                 try:
-                    widget.configure(selectforeground=standard_colors["select_fg"])  # type: ignore[call-arg]
+                    widget.configure(
+                        selectforeground=standard_colors["select_fg"]
+                    )  # type: ignore[call-arg]
                 except tk.TclError:
                     pass
 
             # Restore active colors
             if "activebackground" in config_options:
                 try:
-                    widget.configure(activebackground=standard_colors["active_bg"])  # type: ignore[call-arg]
+                    widget.configure(
+                        activebackground=standard_colors["active_bg"]
+                    )  # type: ignore[call-arg]
                 except tk.TclError:
                     pass
 
             if "activeforeground" in config_options:
                 try:
-                    widget.configure(activeforeground=standard_colors["active_fg"])  # type: ignore[call-arg]
+                    widget.configure(
+                        activeforeground=standard_colors["active_fg"]
+                    )  # type: ignore[call-arg]
                 except tk.TclError:
                     pass
 
             # Restore insert/cursor color
             if "insertbackground" in config_options:
                 try:
-                    widget.configure(insertbackground=standard_colors["insert_bg"])  # type: ignore[call-arg]
+                    widget.configure(
+                        insertbackground=standard_colors["insert_bg"]
+                    )  # type: ignore[call-arg]
                 except tk.TclError:
                     pass
 
             # Restore disabled colors
             if "disabledforeground" in config_options:
                 try:
-                    widget.configure(disabledforeground=standard_colors["disabled_fg"])  # type: ignore[call-arg]
+                    widget.configure(
+                        disabledforeground=standard_colors["disabled_fg"]
+                    )  # type: ignore[call-arg]
                 except tk.TclError:
                     pass
 
             if "disabledbackground" in config_options:
                 try:
-                    widget.configure(disabledbackground=standard_colors["disabled_bg"])  # type: ignore[call-arg]
+                    widget.configure(
+                        disabledbackground=standard_colors["disabled_bg"]
+                    )  # type: ignore[call-arg]
                 except tk.TclError:
                     pass
 
@@ -629,28 +665,36 @@ class HighContrastTheme:
             if widget_class == "Entry":
                 if "fieldbackground" in config_options:
                     try:
-                        widget.configure(fieldbackground=standard_colors["bg"])  # type: ignore[call-arg]
+                        widget.configure(
+                            fieldbackground=standard_colors["bg"]
+                        )  # type: ignore[call-arg]
                     except tk.TclError:
                         pass
 
             elif widget_class == "Scale":
                 if "troughcolor" in config_options:
                     try:
-                        widget.configure(troughcolor=standard_colors["active_bg"])  # type: ignore[call-arg]
+                        widget.configure(
+                            troughcolor=standard_colors["active_bg"]
+                        )  # type: ignore[call-arg]
                     except tk.TclError:
                         pass
 
             elif widget_class in ["Checkbutton", "Radiobutton"]:
                 if "selectcolor" in config_options:
                     try:
-                        widget.configure(selectcolor=standard_colors["select_bg"])  # type: ignore[call-arg]
+                        widget.configure(
+                            selectcolor=standard_colors["select_bg"]
+                        )  # type: ignore[call-arg]
                     except tk.TclError:
                         pass
 
             elif widget_class == "Scrollbar":
                 if "troughcolor" in config_options:
                     try:
-                        widget.configure(troughcolor=standard_colors["active_bg"])  # type: ignore[call-arg]
+                        widget.configure(
+                            troughcolor=standard_colors["active_bg"]
+                        )  # type: ignore[call-arg]
                     except tk.TclError:
                         pass
 

@@ -8,6 +8,7 @@ Background TTS queue using pyttsx3, with lazy init, voice/rate/volume controls.
 import threading
 import queue
 import atexit
+
 # import weakref
 import pyttsx3
 from typing import Optional, List
