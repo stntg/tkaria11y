@@ -13,3 +13,4 @@ exclude =
     .zencoder
 per-file-ignores =
     __init__.py:F401
+    utils.py:F401
