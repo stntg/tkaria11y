@@ -25,6 +25,8 @@ except ImportError:
 
     widgets_path = Path(__file__).parent.parent / "widgets.py"
     spec = importlib.util.spec_from_file_location("widgets", widgets_path)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Could not load widgets module from {widgets_path}")
     widgets = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(widgets)
 
@@ -43,7 +45,12 @@ def main() -> None:
     stub_dir.mkdir(parents=True, exist_ok=True)
     stub_path = stub_dir / "widgets.pyi"
 
-    lines = ["import tkinter as tk\n", "\n", "__all__ = [\n"]
+    lines = [
+        "import tkinter as tk\n",
+        "from typing import Any\n",
+        "\n",
+        "__all__ = [\n",
+    ]
     widget_map = getattr(widgets, "_WIDGET_MAP", {})
     for name in widget_map:
         lines.append(f'    "Accessible{name}",\n')
@@ -52,8 +59,8 @@ def main() -> None:
     for i, (name, (role, base)) in enumerate(widget_map.items()):
         lines.append(f"class Accessible{name}(tk.{base.__name__}):\n")
         lines.append(
-            "    def __init__(self, master=None, *, "
-            'accessible_name: str = "", **kw) -> None: ...\n'
+            "    def __init__(self, master: Any = None, *, "
+            'accessible_name: str = "", **kw: Any) -> None: ...\n'
         )
         lines.append("\n")
         lines.append("    accessible_name: str\n")
