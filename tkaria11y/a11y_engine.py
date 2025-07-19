@@ -216,6 +216,5 @@ def speak(text: str) -> None:
 
 def shutdown_tts() -> None:
     """Shutdown the global TTS instance"""
-    global tts
     if tts:
         tts.shutdown()

@@ -5,7 +5,16 @@ __version__ = "0.0.1"
 
 from .a11y_engine import tts, speak
 from .app import AccessibleApp
-from .widgets import *  # imports all Accessible* classes
+from .widgets import (
+    AccessibleButton,
+    AccessibleEntry,
+    AccessibleLabel,
+    AccessibleCheckbutton,
+    AccessibleRadiobutton,
+    AccessibleScale,
+    AccessibleListbox,
+    AccessibleFrame,
+)
 from .utils import configure_focus_traversal
 from .themes import HighContrastTheme, set_dyslexic_font
 

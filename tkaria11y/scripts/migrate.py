@@ -118,7 +118,7 @@ class TkinterToA11yTransformer:
                     )
                     if text_match and "accessible_name=" not in transformed_line:
                         text_value = text_match.group(1)
-                        # Insert accessible_name parameter after the first positional argument (parent)
+                        # Insert accessible_name parameter after first positional arg
                         paren_pos = transformed_line.find("(")
                         after_paren = transformed_line[paren_pos + 1 :].strip()
 
@@ -131,8 +131,8 @@ class TkinterToA11yTransformer:
                                 + transformed_line[insert_pos:]
                             )
                         else:
-                            # Has parameters - need to find where to insert accessible_name
-                            # Look for the first comma that's not inside parentheses/brackets
+                            # Has parameters - find where to insert accessible_name
+                            # Look for first comma not inside parentheses/brackets
                             comma_pos = self._find_first_param_comma(
                                 transformed_line, paren_pos + 1
                             )
@@ -145,7 +145,7 @@ class TkinterToA11yTransformer:
                                     + transformed_line[insert_pos:]
                                 )
                             else:
-                                # Only one parameter, add accessible_name as second parameter
+                                # Only one param, add accessible_name as second
                                 close_paren = transformed_line.rfind(")")
                                 transformed_line = (
                                     transformed_line[:close_paren]
