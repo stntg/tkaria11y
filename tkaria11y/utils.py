@@ -6,7 +6,7 @@ Utility functions:
 """
 
 import tkinter as tk
-from typing import Any
+from typing import Any, Callable
 
 
 def configure_focus_traversal(root: tk.Tk) -> None:
@@ -14,9 +14,22 @@ def configure_focus_traversal(root: tk.Tk) -> None:
     for i, w in enumerate(widgets):
         next_w = widgets[(i + 1) % len(widgets)]
         prev_w = widgets[(i - 1) % len(widgets)]
-        w.bind(
-            "<Tab>", lambda e, nxt=next_w: (nxt.focus_set(), "break")[1]
-        )  # type: ignore[misc]
-        w.bind(
-            "<Shift-Tab>", lambda e, prv=prev_w: (prv.focus_set(), "break")[1]
-        )  # type: ignore[misc]
+
+        def make_tab_handler(
+            next_widget: tk.Widget,
+        ) -> Callable[[tk.Event[Any]], str]:
+            def handler(event: tk.Event[Any]) -> str:
+                next_widget.focus_set()
+                return "break"
+            return handler
+
+        def make_shift_tab_handler(
+            prev_widget: tk.Widget,
+        ) -> Callable[[tk.Event[Any]], str]:
+            def handler(event: tk.Event[Any]) -> str:
+                prev_widget.focus_set()
+                return "break"
+            return handler
+
+        w.bind("<Tab>", make_tab_handler(next_w))
+        w.bind("<Shift-Tab>", make_shift_tab_handler(prev_w))

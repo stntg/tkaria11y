@@ -222,7 +222,7 @@ def _show_diff(src_text: str, transformed_text: str) -> None:
     new_lines = transformed_text.split("\n")
     for i, (old, new) in enumerate(zip(original_lines, new_lines)):
         if old != new:
-            click.echo(f"Line {i+1}:")
+            click.echo(f"Line {i + 1}:")
             click.echo(f"  - {old}")
             click.echo(f"  + {new}")
 
