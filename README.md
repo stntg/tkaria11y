@@ -1,6 +1,14 @@
 # tkaria11y
 
+[![CI](https://github.com/stntg/tkaria11y/workflows/CI/badge.svg)](https://github.com/stntg/tkaria11y/actions/workflows/CI.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/stntg/tkaria11y/badge)](https://www.codefactor.io/repository/github/stntg/tkaria11y)
+[![PyPI version](https://badge.fury.io/py/tkaria11y.svg)](https://badge.fury.io/py/tkaria11y)
+[![Python versions](https://img.shields.io/pypi/pyversions/tkaria11y.svg)](https://pypi.org/project/tkaria11y/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Downloads](https://pepy.tech/badge/tkaria11y)](https://pepy.tech/project/tkaria11y)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Accessibility](https://img.shields.io/badge/accessibility-WCAG%202.1-blue.svg)](https://www.w3.org/WAI/WCAG21/quickref/)
+[![Type checked](https://img.shields.io/badge/type%20checked-mypy-blue.svg)](https://mypy.readthedocs.io/)
 
 tkaria11y is a Python framework for building fully accessible Tkinter applications—offering ARIA-style metadata, automatic text-to-speech feedback, keyboard navigation, high-contrast theming, and dyslexic-friendly fonts.
 
