@@ -1,8 +1,8 @@
 `markdown
 
-Contributing to tk-a11y
+Contributing to tkaria11y
 
-Thank you for your interest in contributing to tk-a11y! We welcome all kinds of contributions—from bug reports and documentation fixes to new features and plugins. This guide walks you through the process and explains our expectations for code style, testing, and collaboration.
+Thank you for your interest in contributing to tkaria11y! We welcome all kinds of contributions—from bug reports and documentation fixes to new features and plugins. This guide walks you through the process and explains our expectations for code style, testing, and collaboration.
 
 ---
 
@@ -37,8 +37,8 @@ Filing Issues
 Getting the Code
 
 `bash
-git clone git@github.com:stntg/tk-a11y.git
-cd tk-a11y
+git clone git@github.com:stntg/tkaria11y.git
+cd tkaria11y
 `
 
 ---
@@ -162,5 +162,5 @@ Additional Resources
 - Official ARIA Authoring Practices: https://www.w3.org/TR/wai-aria-practices/  
 - WCAG guidelines: https://www.w3.org/WAI/standards-guidelines/wcag/
 
-Thank you for helping make tk-a11y better and more accessible!  
+Thank you for helping make tkaria11y better and more accessible!  
 `

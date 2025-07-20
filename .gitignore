@@ -1,22 +1,30 @@
-Byte-compiled / cache
+# Byte-compiled / cache
 pycache/
 *.py[cod]
 *.$py.class
 
-Distribution / packaging
+# Distribution / packaging
 build/
 dist/
 *.egg-info/
 
-VSCode
+#VSCode
 .vscode/
 
-Mac
+# Mac
 .DS_Store
 
-Logs
+# Logs
 *.log
 
-local development files
+#local development files
 dev_docs/
 .zencoder/
+
+# Local accessibility test suite
+a11y_test_suite/
+
+# Accessibility audit reports (keep audit system, exclude reports)
+a11y_audit/reports/
+*.audit.json
+*.audit.txt

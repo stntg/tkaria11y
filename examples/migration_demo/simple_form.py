@@ -5,36 +5,34 @@ Shows various tkinter widgets that need accessibility improvements.
 """
 
 import tkinter as tk
-from tkinter import ttk
 
 
 def create_form():
-    root = tk.Tk()
-    root.title("User Registration Form")
-    root.geometry("400x500")
+    """Create and return a user registration form with standard tkinter widgets."""
+    main_window = tk.Tk()
+    main_window.title("User Registration Form")
+    main_window.geometry("400x500")
 
     # Title
-    title_label = tk.Label(root, text="User Registration", font=("Arial", 16, "bold"))
-    title_label.pack(pady=10)
+    tk.Label(main_window, text="User Registration", font=("Arial", 16, "bold")).pack(
+        pady=10
+    )
 
     # Main form frame
-    form_frame = tk.Frame(root)
+    form_frame = tk.Frame(main_window)
     form_frame.pack(fill="both", expand=True, padx=20, pady=10)
 
     # Name field
     tk.Label(form_frame, text="Full Name:").pack(anchor="w", pady=(10, 0))
-    name_entry = tk.Entry(form_frame, width=40)
-    name_entry.pack(fill="x", pady=(0, 10))
+    tk.Entry(form_frame, width=40).pack(fill="x", pady=(0, 10))
 
     # Email field
     tk.Label(form_frame, text="Email Address:").pack(anchor="w")
-    email_entry = tk.Entry(form_frame, width=40)
-    email_entry.pack(fill="x", pady=(0, 10))
+    tk.Entry(form_frame, width=40).pack(fill="x", pady=(0, 10))
 
     # Age field
     tk.Label(form_frame, text="Age:").pack(anchor="w")
-    age_entry = tk.Entry(form_frame, width=10)
-    age_entry.pack(anchor="w", pady=(0, 10))
+    tk.Entry(form_frame, width=10).pack(anchor="w", pady=(0, 10))
 
     # Gender selection
     tk.Label(form_frame, text="Gender:").pack(anchor="w")
@@ -57,26 +55,24 @@ def create_form():
     interests_frame = tk.Frame(form_frame)
     interests_frame.pack(anchor="w", pady=(0, 10))
 
-    sports_var = tk.BooleanVar()
-    music_var = tk.BooleanVar()
-    reading_var = tk.BooleanVar()
-
-    tk.Checkbutton(interests_frame, text="Sports", variable=sports_var).pack(anchor="w")
-    tk.Checkbutton(interests_frame, text="Music", variable=music_var).pack(anchor="w")
-    tk.Checkbutton(interests_frame, text="Reading", variable=reading_var).pack(
-        anchor="w"
-    )
+    # Create interest checkboxes with variables
+    for interest, var in [
+        ("Sports", tk.BooleanVar()),
+        ("Music", tk.BooleanVar()),
+        ("Reading", tk.BooleanVar()),
+    ]:
+        tk.Checkbutton(interests_frame, text=interest, variable=var).pack(anchor="w")
 
     # Experience level
     tk.Label(form_frame, text="Experience Level:").pack(anchor="w", pady=(10, 0))
-    experience_scale = tk.Scale(form_frame, from_=1, to=10, orient="horizontal")
-    experience_scale.pack(fill="x", pady=(0, 10))
+    tk.Scale(form_frame, from_=1, to=10, orient="horizontal").pack(
+        fill="x", pady=(0, 10)
+    )
 
     # Country selection
     tk.Label(form_frame, text="Country:").pack(anchor="w")
-    countries = ["USA", "Canada", "UK", "Germany", "France", "Japan", "Australia"]
     country_listbox = tk.Listbox(form_frame, height=4)
-    for country in countries:
+    for country in ["USA", "Canada", "UK", "Germany", "France", "Japan", "Australia"]:
         country_listbox.insert(tk.END, country)
     country_listbox.pack(fill="x", pady=(0, 10))
 
@@ -84,13 +80,16 @@ def create_form():
     button_frame = tk.Frame(form_frame)
     button_frame.pack(fill="x", pady=20)
 
-    tk.Button(button_frame, text="Submit", bg="green", fg="white").pack(
-        side="left", padx=(0, 10)
-    )
-    tk.Button(button_frame, text="Reset", bg="orange").pack(side="left", padx=(0, 10))
-    tk.Button(button_frame, text="Cancel", bg="red", fg="white").pack(side="left")
+    for text, color_config in [
+        ("Submit", {"bg": "green", "fg": "white"}),
+        ("Reset", {"bg": "orange"}),
+        ("Cancel", {"bg": "red", "fg": "white"}),
+    ]:
+        tk.Button(button_frame, text=text, **color_config).pack(
+            side="left", padx=(0, 10)
+        )
 
-    return root
+    return main_window
 
 
 if __name__ == "__main__":

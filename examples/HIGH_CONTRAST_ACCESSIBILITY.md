@@ -9,15 +9,18 @@ You asked: **"Should the main window/frame also have the theme applied or is tha
 ## Why Main Window Theming is Critical for Accessibility
 
 ### 🔍 **Visual Consistency**
+
 - Users with visual impairments need **consistent contrast** across the entire application
 - Mixed contrast levels (some areas themed, others not) create confusion and strain
 - The main window background is part of the visual interface that users see
 
 ### 🎨 **Complete High Contrast Experience**
+
 - **Partial theming**: Some widgets black, main window gray → Confusing and inconsistent
 - **Complete theming**: Everything black with white text → Clear and accessible
 
 ### 📋 **Accessibility Standards**
+
 - WCAG guidelines require consistent contrast ratios across the entire interface
 - High contrast themes should apply to ALL visual elements, not just widgets
 - The application window itself is part of the user interface
@@ -27,6 +30,7 @@ You asked: **"Should the main window/frame also have the theme applied or is tha
 ### ✅ **What Gets Themed (Complete Coverage)**
 
 1. **Main Window Background**
+
    ```python
    # Main Tk window gets black background
    root.configure(bg="black")
@@ -39,6 +43,7 @@ You asked: **"Should the main window/frame also have the theme applied or is tha
    - Canvas, Scrollbars, etc.
 
 3. **Option Database (Future Widgets)**
+
    ```python
    # Ensures ALL future widgets are themed
    root.option_add("*Background", "black")
@@ -46,12 +51,14 @@ You asked: **"Should the main window/frame also have the theme applied or is tha
    ```
 
 4. **System Palette**
+
    ```python
    # Sets system-wide defaults for the application
    widget.tk.call("tk_setPalette", "black", "foreground", "white", ...)
    ```
 
 ### 🎨 **Color Scheme**
+
 ```python
 COLORS = {
     "bg": "black",           # Background - high contrast
@@ -67,42 +74,46 @@ COLORS = {
 ## Visual Comparison
 
 ### ❌ **Before (Incomplete Theming)**
-```
+
+```text
 ┌─────────────────────────────────┐
 │ GRAY MAIN WINDOW BACKGROUND     │  ← Not themed!
 │  ┌─────────────┐ ┌────────────┐ │
 │  │ Black Button│ │Black Label │ │  ← Only widgets themed
 │  └─────────────┘ └────────────┘ │
-│  ┌─────────────────────────────┐ │
-│  │ Black Entry Field           │ │
-│  └─────────────────────────────┘ │
+│  ┌────────────────────────────┐ │
+│  │ Black Entry Field          │ │
+│  └────────────────────────────┘ │
 │ GRAY AREAS EVERYWHERE           │  ← Inconsistent!
 └─────────────────────────────────┘
 ```
 
 ### ✅ **After (Complete Theming)**
-```
-┌─────────────────────────────────┐
-│ BLACK MAIN WINDOW BACKGROUND    │  ← Fully themed!
-│  ┌─────────────┐ ┌────────────┐ │
+
+```text
+┌──────────────────────────────────┐
+│ BLACK MAIN WINDOW BACKGROUND     │  ← Fully themed!
+│  ┌──────────────┐ ┌────────────┐ │
 │  │White on Black│ │White on Blk│ │  ← Consistent
-│  └─────────────┘ └────────────┘ │
+│  └──────────────┘ └────────────┘ │
 │  ┌─────────────────────────────┐ │
 │  │ White text on black         │ │
 │  └─────────────────────────────┘ │
-│ CONSISTENT BLACK EVERYWHERE     │  ← Perfect!
-└─────────────────────────────────┘
+│ CONSISTENT BLACK EVERYWHERE      │  ← Perfect!
+└──────────────────────────────────┘
 ```
 
 ## Real-World Impact
 
 ### 👥 **For Users with Visual Impairments**
+
 - **Low Vision**: Consistent high contrast reduces eye strain
 - **Color Blindness**: Black/white provides maximum contrast regardless of color perception
 - **Light Sensitivity**: Dark backgrounds are more comfortable
 - **Cognitive Load**: Consistent theming reduces mental effort to process the interface
 
 ### 🖥️ **For Screen Reader Users**
+
 - While screen readers don't "see" colors, many users have partial vision
 - Consistent theming helps users who use both screen readers AND visual cues
 - High contrast makes it easier to follow along with screen reader announcements
@@ -112,6 +123,7 @@ COLORS = {
 ### 🔧 **Technical Approach**
 
 1. **Option Database First**
+
    ```python
    # Set defaults for ALL widgets (including future ones)
    root.option_add("*Background", "black")
@@ -119,18 +131,21 @@ COLORS = {
    ```
 
 2. **Direct Widget Configuration**
+
    ```python
    # Apply to existing widgets immediately
    widget.configure(bg="black", fg="white")
    ```
 
 3. **System Palette Integration**
+
    ```python
    # Set application-wide defaults
    root.tk.call("tk_setPalette", "black", "foreground", "white", ...)
    ```
 
 4. **Continuous Monitoring**
+
    ```python
    # Auto-theme new widgets as they're created
    def auto_theme_new_widgets():
@@ -139,6 +154,7 @@ COLORS = {
    ```
 
 ### 🎯 **Special Handling for Main Window**
+
 ```python
 if widget_class == "Tk" and isinstance(widget, tk.Tk):
     # Main window background is CRITICAL for accessibility
@@ -150,11 +166,13 @@ if widget_class == "Tk" and isinstance(widget, tk.Tk):
 ## Testing the Implementation
 
 ### 📋 **Test Files**
+
 - `main_window_theme_test.py` - Specifically tests main window theming
 - `simple_theme_test.py` - Tests complete application theming
 - `theme_demo.py` - Interactive before/after comparison
 
 ### 🔍 **What to Look For**
+
 1. **Before Theme**: Gray/light backgrounds visible around widgets
 2. **After Theme**: Entire window is black with white text
 3. **New Widgets**: Automatically get black background
@@ -163,6 +181,7 @@ if widget_class == "Tk" and isinstance(widget, tk.Tk):
 ## Best Practices for Accessibility
 
 ### ✅ **Do This**
+
 - Apply theme to the ENTIRE application (including main window)
 - Use maximum contrast colors (black/white)
 - Ensure all widget types are covered
@@ -170,6 +189,7 @@ if widget_class == "Tk" and isinstance(widget, tk.Tk):
 - Provide easy toggle on/off functionality
 
 ### ❌ **Don't Do This**
+
 - Theme only some widgets while leaving others normal
 - Use low-contrast "high contrast" colors (like dark gray/light gray)
 - Forget about the main window background
@@ -179,6 +199,7 @@ if widget_class == "Tk" and isinstance(widget, tk.Tk):
 ## Usage Examples
 
 ### 🚀 **Simple Usage**
+
 ```python
 from tkaria11y.themes import HighContrastTheme
 import tkinter as tk
@@ -197,6 +218,7 @@ root.mainloop()
 ```
 
 ### 🎛️ **With AccessibleApp**
+
 ```python
 from tkaria11y import AccessibleApp
 
@@ -208,6 +230,7 @@ app.toggle_high_contrast()  # Complete theming on/off
 ```
 
 ### 🔄 **Dynamic Control**
+
 ```python
 # Check if themed
 if HighContrastTheme.is_applied(root):

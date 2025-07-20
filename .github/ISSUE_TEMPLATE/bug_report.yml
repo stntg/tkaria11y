@@ -1,0 +1,157 @@
+name: 🐛 Bug Report
+description: Report a bug or unexpected behavior in tkaria11y
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill out this form as completely as possible to help us understand and reproduce the issue.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      description: Please verify these items before submitting
+      options:
+        - label: I have searched existing issues to ensure this bug hasn't been reported
+          required: true
+        - label: I have tested with the latest version of tkaria11y
+          required: true
+        - label: I have read the documentation and examples
+          required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is
+      placeholder: Describe what happened and what you expected to happen
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Bug Category
+      description: Which area of tkaria11y is affected?
+      options:
+        - Accessibility Features (TTS, ARIA, keyboard navigation)
+        - Widget Functionality
+        - Theming (high-contrast, dyslexic fonts)
+        - Inspector Tool
+        - Migration Tool
+        - Type Stubs/IDE Support
+        - Installation/Dependencies
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Detailed steps to reproduce the bug
+      placeholder: |
+        1. Create an AccessibleApp with...
+        2. Add an AccessibleButton with...
+        3. Press Tab to navigate...
+        4. See error...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What should have happened?
+      placeholder: Describe the expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+      placeholder: Describe what actually happened, including any error messages
+    validations:
+      required: true
+
+  - type: textarea
+    id: code
+    attributes:
+      label: Minimal Code Example
+      description: Please provide a minimal code example that reproduces the issue
+      render: python
+      placeholder: |
+        from tkaria11y import AccessibleApp
+        from tkaria11y.widgets import AccessibleButton
+        
+        app = AccessibleApp(title="Bug Demo")
+        # Add minimal code that reproduces the bug
+        app.mainloop()
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment Information
+      description: Please provide your environment details
+      placeholder: |
+        - OS: [e.g., Windows 11, macOS 13, Ubuntu 22.04]
+        - Python version: [e.g., 3.9.7]
+        - tkaria11y version: [e.g., 1.0.0]
+        - Tkinter version: [if known]
+        - Screen reader: [if applicable, e.g., NVDA, JAWS, VoiceOver]
+        - TTS engine: [if applicable, e.g., SAPI, espeak]
+    validations:
+      required: true
+
+  - type: textarea
+    id: accessibility_impact
+    attributes:
+      label: Accessibility Impact
+      description: How does this bug affect accessibility features?
+      placeholder: |
+        - Does this affect screen reader users?
+        - Does this impact keyboard navigation?
+        - Are TTS announcements affected?
+        - Does this affect high-contrast themes?
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error Logs/Traceback
+      description: If applicable, paste any error messages or tracebacks
+      render: text
+      placeholder: Paste any error messages, tracebacks, or relevant log output here
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any other context about the problem
+      placeholder: Add any other context, screenshots, or information that might be helpful
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: accessibility_testing
+    attributes:
+      label: Accessibility Testing
+      description: Have you tested this with accessibility tools?
+      options:
+        - label: Tested with screen reader
+        - label: Tested with keyboard-only navigation
+        - label: Tested with high-contrast theme
+        - label: Tested with accessibility inspector (F2)
+        - label: Not applicable to this bug

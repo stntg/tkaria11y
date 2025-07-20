@@ -1,0 +1,198 @@
+name: ❓ Question
+description: Ask a question about using tkaria11y
+title: "[Question]: "
+labels: ["question", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have a question about tkaria11y? We're here to help! 
+        
+        **Note**: For bug reports, feature requests, or accessibility issues, please use the appropriate template instead.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      description: Please check these before asking your question
+      options:
+        - label: I have searched existing issues and discussions for similar questions
+          required: true
+        - label: I have read the README and available documentation
+          required: true
+        - label: I have looked at the examples directory
+          required: true
+        - label: I have tried to solve this myself first
+          required: true
+
+  - type: dropdown
+    id: question_category
+    attributes:
+      label: Question Category
+      description: What is your question about?
+      options:
+        - Getting Started/Installation
+        - Widget Usage and Configuration
+        - Accessibility Features (TTS, ARIA, keyboard navigation)
+        - Theming and Visual Customization
+        - Migration from Standard Tkinter
+        - Developer Tools (inspector, stubs, migration tool)
+        - Best Practices
+        - Performance and Optimization
+        - Integration with Other Libraries
+        - Accessibility Standards and Compliance
+        - Contributing to the Project
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: What would you like to know?
+      placeholder: |
+        Please be as specific as possible. Include:
+        - What you're trying to accomplish
+        - What you've tried so far
+        - What specific aspect you need help with
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context and Background
+      description: Provide context about your project or use case
+      placeholder: |
+        Help us understand your situation:
+        - What kind of application are you building?
+        - Who are your target users?
+        - What accessibility requirements do you have?
+        - Are you new to Tkinter or accessibility development?
+    validations:
+      required: false
+
+  - type: textarea
+    id: current_code
+    attributes:
+      label: Current Code (if applicable)
+      description: Share relevant code you're working with
+      render: python
+      placeholder: |
+        # Share any relevant code you're working with
+        from tkaria11y import AccessibleApp
+        
+        # Your current implementation
+    validations:
+      required: false
+
+  - type: textarea
+    id: attempted_solutions
+    attributes:
+      label: What Have You Tried?
+      description: What approaches have you already attempted?
+      placeholder: |
+        Describe what you've tried:
+        - Code approaches you've tested
+        - Documentation you've consulted
+        - Examples you've looked at
+        - Error messages you've encountered
+    validations:
+      required: false
+
+  - type: textarea
+    id: expected_outcome
+    attributes:
+      label: Desired Outcome
+      description: What would you like to achieve?
+      placeholder: |
+        Describe your goal:
+        - What should the final result look like?
+        - What accessibility features do you need?
+        - What user experience are you aiming for?
+    validations:
+      required: false
+
+  - type: dropdown
+    id: experience_level
+    attributes:
+      label: Experience Level
+      description: What's your experience level with these technologies?
+      options:
+        - Beginner (new to Tkinter and accessibility)
+        - Intermediate (some Tkinter experience, new to accessibility)
+        - Advanced (experienced with Tkinter, learning accessibility)
+        - Expert (experienced with both Tkinter and accessibility)
+    validations:
+      required: false
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment (if relevant)
+      description: Your development environment details
+      placeholder: |
+        If relevant to your question:
+        - OS: [e.g., Windows 11, macOS 13, Ubuntu 22.04]
+        - Python version: [e.g., 3.9.7]
+        - tkaria11y version: [e.g., 1.0.0]
+        - IDE: [e.g., VS Code, PyCharm]
+        - Target users: [e.g., screen reader users, keyboard-only users]
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: accessibility_focus
+    attributes:
+      label: Accessibility Focus
+      description: Which accessibility aspects are you most interested in?
+      options:
+        - label: Screen reader compatibility
+        - label: Keyboard navigation
+        - label: Visual accessibility (contrast, fonts)
+        - label: Motor accessibility
+        - label: Cognitive accessibility
+        - label: WCAG compliance
+        - label: General inclusive design
+        - label: Not specifically accessibility-focused
+
+  - type: dropdown
+    id: urgency
+    attributes:
+      label: Urgency
+      description: How urgent is this question for you?
+      options:
+        - Low (learning/exploring)
+        - Medium (working on a project)
+        - High (blocked on current work)
+        - Critical (production issue)
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional_info
+    attributes:
+      label: Additional Information
+      description: Any other details that might be helpful
+      placeholder: |
+        Include any other relevant information:
+        - Links to related resources
+        - Screenshots or examples
+        - Specific requirements or constraints
+        - Timeline considerations
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: follow_up
+    attributes:
+      label: Follow-up
+      description: How would you like to follow up on this question?
+      options:
+        - label: I'm happy to test suggested solutions
+        - label: I can provide more details if needed
+        - label: I'm interested in contributing documentation based on the answer
+        - label: I'd like to help others with similar questions

@@ -5,7 +5,7 @@ This shows a typical tkinter app that needs accessibility improvements.
 """
 
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import messagebox
 from tkaria11y.widgets import (
     AccessibleButton,
     AccessibleLabel,
@@ -15,6 +15,8 @@ from tkaria11y.widgets import (
 
 
 class SimpleCalculatorApp:
+    """Simple calculator application using accessible tkaria11y widgets."""
+
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("Simple Calculator")
@@ -27,6 +29,7 @@ class SimpleCalculatorApp:
         self.setup_ui()
 
     def setup_ui(self):
+        """Set up the user interface with accessible widgets."""
         # Result display
         result_frame = AccessibleFrame(self.root)
         result_frame.pack(fill="x", padx=10, pady=10)
@@ -114,10 +117,12 @@ class SimpleCalculatorApp:
         self.status_label.pack(side="bottom", fill="x")
 
     def calculate(self, operation):
+        """Perform calculation based on the given operation."""
         try:
             current_result = float(self.result_var.get())
             new_number = float(self.number_entry.get())
 
+            result = 0  # Initialize result variable
             if operation == "add":
                 result = current_result + new_number
             elif operation == "subtract":
@@ -139,11 +144,13 @@ class SimpleCalculatorApp:
             self.status_label.config(text="Error: Invalid input")
 
     def clear(self):
+        """Clear the calculator display and input."""
         self.result_var.set("0")
         self.number_entry.delete(0, tk.END)
         self.status_label.config(text="Cleared")
 
     def run(self):
+        """Start the application main loop."""
         self.root.mainloop()
 
 

@@ -6,6 +6,7 @@ from tkaria11y.widgets import AccessibleEntry, AccessibleButton, AccessibleLabel
 
 
 def create_simple_app():
+    """Create a simple test application with accessible widgets."""
     root = tk.Tk()
     root.title("Test App")
 

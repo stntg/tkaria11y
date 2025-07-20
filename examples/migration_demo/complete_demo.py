@@ -11,6 +11,18 @@ from pathlib import Path
 # Add the parent directory to the path so we can import tkaria11y
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
+try:
+    from tkaria11y.widgets import (
+        AccessibleLabel,
+        AccessibleEntry,
+        AccessibleButton,
+        AccessibleFrame,
+    )
+
+    TKARIA11Y_AVAILABLE = True
+except ImportError:
+    TKARIA11Y_AVAILABLE = False
+
 
 def show_before_after_comparison():
     """Show a side-by-side comparison of the migration results"""
@@ -73,111 +85,90 @@ def show_before_after_comparison():
     print("   python -m tkaria11y.scripts.migrate myapp.py --interactive")
 
 
-def create_demo_apps():
-    """Create both original and migrated versions for comparison"""
+def create_original_app():
+    """Original tkinter app"""
+    root = tk.Tk()
+    root.title("Original App (No Accessibility)")
+    root.geometry("300x200")
 
-    print("\n🎮 Demo Applications")
-    print("=" * 30)
+    tk.Label(root, text="This is the ORIGINAL app", font=("Arial", 12, "bold")).pack(
+        pady=10
+    )
+    tk.Label(root, text="Name:").pack(anchor="w", padx=20)
+    tk.Entry(root, width=30).pack(pady=5)
 
-    def create_original_app():
-        """Original tkinter app"""
-        root = tk.Tk()
-        root.title("Original App (No Accessibility)")
-        root.geometry("300x200")
+    tk.Label(root, text="Message:").pack(anchor="w", padx=20)
+    tk.Entry(root, width=30).pack(pady=5)
 
-        tk.Label(
-            root, text="This is the ORIGINAL app", font=("Arial", 12, "bold")
-        ).pack(pady=10)
-        tk.Label(root, text="Name:").pack(anchor="w", padx=20)
-        tk.Entry(root, width=30).pack(pady=5)
+    button_frame = tk.Frame(root)
+    button_frame.pack(pady=20)
 
-        tk.Label(root, text="Message:").pack(anchor="w", padx=20)
-        tk.Entry(root, width=30).pack(pady=5)
+    tk.Button(button_frame, text="Submit", bg="green", fg="white").pack(
+        side="left", padx=5
+    )
+    tk.Button(button_frame, text="Clear", bg="orange").pack(side="left", padx=5)
+    tk.Button(
+        button_frame, text="Close", bg="red", fg="white", command=root.destroy
+    ).pack(side="left", padx=5)
 
-        button_frame = tk.Frame(root)
-        button_frame.pack(pady=20)
+    return root
 
-        tk.Button(button_frame, text="Submit", bg="green", fg="white").pack(
-            side="left", padx=5
+
+def create_accessible_app():
+    """Migrated accessible app"""
+    if not TKARIA11Y_AVAILABLE:
+        print(
+            "❌ Could not import tkaria11y widgets. Make sure the package is installed."
         )
-        tk.Button(button_frame, text="Clear", bg="orange").pack(side="left", padx=5)
-        tk.Button(
-            button_frame, text="Close", bg="red", fg="white", command=root.destroy
-        ).pack(side="left", padx=5)
+        return None
 
-        return root
+    root = tk.Tk()
+    root.title("Accessible App (After Migration)")
+    root.geometry("300x200")
 
-    def create_accessible_app():
-        """Migrated accessible app"""
-        try:
-            from tkaria11y.widgets import (
-                AccessibleLabel,
-                AccessibleEntry,
-                AccessibleButton,
-                AccessibleFrame,
-            )
+    AccessibleLabel(
+        root,
+        accessible_name="This is the ACCESSIBLE app",
+        text="This is the ACCESSIBLE app",
+        font=("Arial", 12, "bold"),
+    ).pack(pady=10)
+    AccessibleLabel(root, accessible_name="Name:", text="Name:").pack(
+        anchor="w", padx=20
+    )
+    AccessibleEntry(root, accessible_name="Name input field", width=30).pack(pady=5)
 
-            root = tk.Tk()
-            root.title("Accessible App (After Migration)")
-            root.geometry("300x200")
+    AccessibleLabel(root, accessible_name="Message:", text="Message:").pack(
+        anchor="w", padx=20
+    )
+    AccessibleEntry(root, accessible_name="Message input field", width=30).pack(pady=5)
 
-            AccessibleLabel(
-                root,
-                accessible_name="This is the ACCESSIBLE app",
-                text="This is the ACCESSIBLE app",
-                font=("Arial", 12, "bold"),
-            ).pack(pady=10)
-            AccessibleLabel(root, accessible_name="Name:", text="Name:").pack(
-                anchor="w", padx=20
-            )
-            AccessibleEntry(root, accessible_name="Name input field", width=30).pack(
-                pady=5
-            )
+    button_frame = AccessibleFrame(root, accessible_name="Button controls")
+    button_frame.pack(pady=20)
 
-            AccessibleLabel(root, accessible_name="Message:", text="Message:").pack(
-                anchor="w", padx=20
-            )
-            AccessibleEntry(root, accessible_name="Message input field", width=30).pack(
-                pady=5
-            )
+    AccessibleButton(
+        button_frame,
+        accessible_name="Submit",
+        text="Submit",
+        bg="green",
+        fg="white",
+    ).pack(side="left", padx=5)
+    AccessibleButton(
+        button_frame, accessible_name="Clear", text="Clear", bg="orange"
+    ).pack(side="left", padx=5)
+    AccessibleButton(
+        button_frame,
+        accessible_name="Close",
+        text="Close",
+        bg="red",
+        fg="white",
+        command=root.destroy,
+    ).pack(side="left", padx=5)
 
-            button_frame = AccessibleFrame(root, accessible_name="Button controls")
-            button_frame.pack(pady=20)
+    return root
 
-            AccessibleButton(
-                button_frame,
-                accessible_name="Submit",
-                text="Submit",
-                bg="green",
-                fg="white",
-            ).pack(side="left", padx=5)
-            AccessibleButton(
-                button_frame, accessible_name="Clear", text="Clear", bg="orange"
-            ).pack(side="left", padx=5)
-            AccessibleButton(
-                button_frame,
-                accessible_name="Close",
-                text="Close",
-                bg="red",
-                fg="white",
-                command=root.destroy,
-            ).pack(side="left", padx=5)
 
-            return root
-        except ImportError:
-            print(
-                "❌ Could not import tkaria11y widgets. Make sure the package is installed."
-            )
-            return None
-
-    print("Choose which demo to run:")
-    print("1. Original tkinter app (no accessibility)")
-    print("2. Migrated accessible app")
-    print("3. Both apps side by side")
-    print("4. Skip demo")
-
-    choice = input("\nEnter your choice (1-4): ").strip()
-
+def run_demo_choice(choice):
+    """Handle the demo choice execution"""
     if choice == "1":
         print("🚀 Running original app...")
         app = create_original_app()
@@ -215,6 +206,21 @@ def create_demo_apps():
 
     else:
         print("❌ Invalid choice.")
+
+
+def create_demo_apps():
+    """Create both original and migrated versions for comparison"""
+    print("\n🎮 Demo Applications")
+    print("=" * 30)
+
+    print("Choose which demo to run:")
+    print("1. Original tkinter app (no accessibility)")
+    print("2. Migrated accessible app")
+    print("3. Both apps side by side")
+    print("4. Skip demo")
+
+    choice = input("\nEnter your choice (1-4): ").strip()
+    run_demo_choice(choice)
 
 
 def main():

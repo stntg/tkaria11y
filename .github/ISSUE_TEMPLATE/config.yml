@@ -1,0 +1,17 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 GitHub Discussions
+    url: https://github.com/stntg/tkaria11y/discussions
+    about: Ask questions, share ideas, and discuss tkaria11y with the community
+  - name: 📖 Documentation
+    url: https://github.com/stntg/tkaria11y/blob/main/README.md
+    about: Read the documentation, examples, and getting started guide
+  - name: 🔍 Accessibility Inspector Demo
+    url: https://github.com/stntg/tkaria11y/blob/main/examples/inspector_demo.py
+    about: Try the accessibility inspector tool to debug accessibility issues
+  - name: 📧 Direct Contact
+    url: mailto:stantgriffiths@gmail.com
+    about: Contact the maintainer directly for sensitive issues or private discussions
+  - name: 🛡️ Security Issues
+    url: mailto:stantgriffiths@gmail.com
+    about: Report security vulnerabilities privately via email

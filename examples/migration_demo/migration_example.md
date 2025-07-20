@@ -6,7 +6,8 @@ This document shows a complete example of what the `tkaria11y-migrate` tool does
 
 We ran the migration tool on `test_file.py` and it automatically transformed the code:
 
-### Before Migration:
+### Before Migration
+
 ```python
 #!/usr/bin/env python3
 """Test file for migration demonstration"""
@@ -33,7 +34,8 @@ if __name__ == "__main__":
     app.mainloop()
 ```
 
-### After Migration:
+### After Migration
+
 ```python
 #!/usr/bin/env python3
 """Test file for migration demonstration"""
@@ -75,6 +77,7 @@ if __name__ == "__main__":
 ## How to Use the Migration Tool
 
 ### Basic Usage
+
 ```bash
 # Migrate a single file
 python -m tkaria11y.scripts.migrate myapp.py
@@ -87,6 +90,7 @@ python -m tkaria11y.scripts.migrate myapp.py --interactive
 ```
 
 ### Interactive Mode Example
+
 ```bash
 $ python -m tkaria11y.scripts.migrate examples/migration_demo/test_file.py --interactive
 
@@ -115,21 +119,27 @@ Apply these changes? [y/N]: y
 ## What You Get After Migration
 
 ### 1. Screen Reader Compatibility
+
 Your widgets now work with screen readers like NVDA, JAWS, and VoiceOver:
+
 - Labels announce their text content
 - Buttons announce their purpose
 - Entry fields can be properly identified
 
 ### 2. Text-to-Speech Integration
+
 When users focus on widgets, they hear audio announcements:
+
 - Button focus: "Click Me, button"
 - Label focus: "Hello World, label"
 - Entry focus: "Text input field"
 
 ### 3. Better Keyboard Navigation
+
 Enhanced keyboard support with proper focus management.
 
 ### 4. Preserved Functionality
+
 All your existing code continues to work exactly the same - no breaking changes!
 
 ## Advanced Migration Examples
@@ -137,6 +147,7 @@ All your existing code continues to work exactly the same - no breaking changes!
 ### Complex Form Migration
 
 **Before:**
+
 ```python
 import tkinter as tk
 
@@ -159,6 +170,7 @@ class UserForm:
 ```
 
 **After Migration:**
+
 ```python
 import tkinter as tk
 from tkaria11y.widgets import AccessibleLabel, AccessibleEntry, AccessibleButton
@@ -184,6 +196,7 @@ class UserForm:
 ## Migration Tool Features
 
 ### Supported Widget Types
+
 - ✅ `tk.Button` → `AccessibleButton`
 - ✅ `tk.Label` → `AccessibleLabel`
 - ✅ `tk.Entry` → `AccessibleEntry`
@@ -194,12 +207,14 @@ class UserForm:
 - ✅ `tk.Listbox` → `AccessibleListbox`
 
 ### Smart Features
+
 - **Automatic Import Management**: Adds only the imports you need
 - **Text-Based accessible_name**: Extracts `accessible_name` from `text=` parameters
 - **Preserves All Parameters**: Keeps all your existing widget configuration
 - **Safe Transformation**: Only changes widget class names and adds accessibility
 
 ### What It Doesn't Change
+
 - ❌ Your application logic
 - ❌ Event handlers and callbacks
 - ❌ Widget styling and appearance
