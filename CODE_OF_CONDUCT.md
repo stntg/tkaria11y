@@ -2,7 +2,7 @@
 
 ## Our Pledge
 
-In the interest of fostering an open and welcoming environment, we as contributors and maintainers pledge to make participation in **tk-a11y** project and our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, nationality, personal appearance, race, religion, or sexual identity and orientation.
+In the interest of fostering an open and welcoming environment, we as contributors and maintainers pledge to make participation in **tkaria11y** project and our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, nationality, personal appearance, race, religion, or sexual identity and orientation.
 
 ## Our Standards
 
@@ -35,7 +35,13 @@ Instances of abusive, harassing, or otherwise unacceptable behavior in any proje
 
 ### 1. Reporting
 
-If you are subject to or witness unacceptable behavior, or have any other concerns, please notify the project maintainers as soon as possible by emailing **conduct@tk-a11y.org**. All complaints will be reviewed and investigated promptly and fairly.
+If you are subject to or witness unacceptable behavior, or have any other concerns, please notify the project maintainers as soon as possible through one of these channels:
+
+- **GitHub Issues**: [Create a private issue](https://github.com/stntg/tkaria11y/issues) (mark as confidential if needed)
+- **Direct Email**: Contact the project maintainer at **stantgriffiths@gmail.com**
+- **GitHub Discussions**: Use the [community discussions](https://github.com/stntg/tkaria11y/discussions) for general concerns
+
+All complaints will be reviewed and investigated promptly and fairly.
 
 ### 2. Confidentiality
 

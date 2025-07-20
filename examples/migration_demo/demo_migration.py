@@ -4,15 +4,13 @@ Demonstration of the tkaria11y migration tool.
 This script shows what the migrate command does by creating before/after examples.
 """
 
-import os
 import sys
-import shutil
 from pathlib import Path
+
+from tkaria11y.scripts.migrate import TkinterToA11yTransformer
 
 # Add the parent directory to the path so we can import tkaria11y
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-
-from tkaria11y.scripts.migrate import TkinterToA11yTransformer
 
 
 def demonstrate_migration():
@@ -22,10 +20,13 @@ def demonstrate_migration():
     print("=" * 50)
 
     # Get the current directory
-    demo_dir = Path(__file__).parent
+    current_demo_dir = Path(__file__).parent
 
     # Files to migrate
-    files_to_migrate = [demo_dir / "before_migration.py", demo_dir / "simple_form.py"]
+    files_to_migrate = [
+        current_demo_dir / "before_migration.py",
+        current_demo_dir / "simple_form.py",
+    ]
 
     # Create transformer
     transformer = TkinterToA11yTransformer(interactive=False)
@@ -74,18 +75,18 @@ def demonstrate_migration():
         else:
             print("ℹ️  No changes needed - file already uses accessible widgets")
 
-    print(f"\n🎉 Migration demonstration complete!")
-    print(f"📂 Check the 'after_*.py' files to see the results")
+    print("\n🎉 Migration demonstration complete!")
+    print("📂 Check the 'after_*.py' files to see the results")
 
     # Show summary of what the migration does
-    print(f"\n📋 What the migration tool does:")
-    print(f"   • Converts tk.Button → AccessibleButton")
-    print(f"   • Converts tk.Entry → AccessibleEntry")
-    print(f"   • Converts tk.Label → AccessibleLabel")
-    print(f"   • Converts tk.Frame → AccessibleFrame")
-    print(f"   • Adds accessible_name parameters based on text= values")
-    print(f"   • Adds necessary imports from tkaria11y.widgets")
-    print(f"   • Preserves all existing functionality")
+    print("\n📋 What the migration tool does:")
+    print("   • Converts tk.Button → AccessibleButton")
+    print("   • Converts tk.Entry → AccessibleEntry")
+    print("   • Converts tk.Label → AccessibleLabel")
+    print("   • Converts tk.Frame → AccessibleFrame")
+    print("   • Adds accessible_name parameters based on text= values")
+    print("   • Adds necessary imports from tkaria11y.widgets")
+    print("   • Preserves all existing functionality")
 
 
 def show_file_comparison(file1_path: Path, file2_path: Path):

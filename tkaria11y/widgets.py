@@ -33,10 +33,12 @@ for name, (role, base) in _WIDGET_MAP.items():
     # Create a closure to capture the role variable
     def make_init(widget_role):
         def __init__(self, master=None, *, accessible_name="", **kw):
+            # Use user-provided accessible_role if present, otherwise use default
+            role = kw.pop("accessible_role", widget_role)
             super(self.__class__, self).__init__(
                 master,
                 accessible_name=accessible_name,
-                accessible_role=widget_role,
+                accessible_role=role,
                 **kw,
             )
 

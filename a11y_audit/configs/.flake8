@@ -1,0 +1,61 @@
+[flake8]
+# Flake8 configuration for accessibility linting
+
+# Maximum line length (compatible with Black)
+max-line-length = 88
+
+# Ignore specific errors for Black compatibility
+ignore = 
+    E203,  # whitespace before ':'
+    W503,  # line break before binary operator
+    E501,  # line too long (handled by Black)
+
+# Per-file ignores
+per-file-ignores =
+    __init__.py:F401,F403
+    test_*.py:D100,D101,D102,D103,D104
+    conftest.py:D100,D101,D102,D103,D104
+    setup.py:D100,D101,D102,D103,D104
+
+# Directories to exclude
+exclude = 
+    .git,
+    __pycache__,
+    .pytest_cache,
+    build,
+    dist,
+    *.egg-info,
+    .venv,
+    venv,
+    a11y_test_suite,
+    a11y_audit/reports
+
+# Enable specific accessibility checks
+select = 
+    E,    # pycodestyle errors
+    W,    # pycodestyle warnings
+    F,    # pyflakes
+    C,    # mccabe complexity
+    N,    # pep8-naming
+    D,    # pydocstyle
+
+# Docstring configuration
+docstring-convention = google
+
+# Import order configuration
+import-order-style = google
+application-import-names = tkaria11y
+
+# Naming conventions
+classname-conventions = CamelCase
+function-name-conventions = snake_case
+variable-name-conventions = snake_case
+constant-name-conventions = UPPER_CASE
+
+# Complexity limits
+max-complexity = 10
+
+# Statistics and reporting
+statistics = True
+count = True
+show-source = True

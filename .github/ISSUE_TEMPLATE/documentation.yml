@@ -1,0 +1,208 @@
+name: 📚 Documentation Issue
+description: Report missing, unclear, or incorrect documentation
+title: "[Docs]: "
+labels: ["documentation", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Help us improve tkaria11y's documentation! Clear documentation is essential for accessibility.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      description: Please verify these items before submitting
+      options:
+        - label: I have searched existing documentation issues
+          required: true
+        - label: I have checked the latest documentation in the repository
+          required: true
+        - label: I have looked at the examples directory for related information
+          required: false
+
+  - type: dropdown
+    id: doc_type
+    attributes:
+      label: Documentation Type
+      description: What type of documentation issue is this?
+      options:
+        - API Documentation
+        - Getting Started Guide
+        - Examples/Tutorials
+        - Accessibility Guidelines
+        - Migration Guide
+        - Developer Documentation
+        - Type Stubs/IDE Support
+        - README/Project Description
+        - Code Comments
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: issue_type
+    attributes:
+      label: Issue Type
+      description: What kind of documentation issue is this?
+      options:
+        - Missing documentation
+        - Incorrect/outdated information
+        - Unclear/confusing explanation
+        - Missing examples
+        - Broken links
+        - Accessibility information missing
+        - Code examples don't work
+        - Typos/grammar issues
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: location
+    attributes:
+      label: Documentation Location
+      description: Where is the documentation issue located?
+      placeholder: |
+        Please specify:
+        - File path: [e.g., docs/index.md, README.md, examples/minimal_app.py]
+        - Section/heading: [e.g., "Installation", "API Reference"]
+        - Line numbers: [if applicable]
+        - URL: [if this is about online documentation]
+    validations:
+      required: true
+
+  - type: textarea
+    id: current_content
+    attributes:
+      label: Current Content
+      description: What does the current documentation say? (copy/paste if possible)
+      placeholder: Copy and paste the current documentation content that has issues
+    validations:
+      required: false
+
+  - type: textarea
+    id: issue_description
+    attributes:
+      label: Issue Description
+      description: Describe the documentation problem in detail
+      placeholder: |
+        Clearly explain:
+        - What is missing, incorrect, or unclear
+        - Why this is problematic for users
+        - How it affects understanding or usage
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggested_improvement
+    attributes:
+      label: Suggested Improvement
+      description: How should the documentation be improved?
+      placeholder: |
+        Provide suggestions for improvement:
+        - What information should be added
+        - How unclear sections could be rewritten
+        - What examples would be helpful
+        - How accessibility information could be better presented
+    validations:
+      required: true
+
+  - type: textarea
+    id: target_audience
+    attributes:
+      label: Target Audience
+      description: Who would benefit from this documentation improvement?
+      placeholder: |
+        Consider:
+        - New users learning tkaria11y
+        - Experienced developers migrating from Tkinter
+        - Accessibility experts
+        - Screen reader users
+        - Developers with disabilities
+        - Contributors to the project
+    validations:
+      required: false
+
+  - type: textarea
+    id: accessibility_context
+    attributes:
+      label: Accessibility Context
+      description: How does this documentation issue relate to accessibility?
+      placeholder: |
+        If applicable:
+        - Does this affect understanding of accessibility features?
+        - Would better documentation help create more accessible apps?
+        - Are accessibility best practices missing?
+        - Would this help users with disabilities use the framework?
+    validations:
+      required: false
+
+  - type: textarea
+    id: examples_needed
+    attributes:
+      label: Examples Needed
+      description: What code examples would help illustrate this documentation?
+      render: python
+      placeholder: |
+        # Provide examples of code that should be documented
+        from tkaria11y import AccessibleApp
+        
+        # Example showing what needs better documentation
+    validations:
+      required: false
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this documentation improvement?
+      options:
+        - Critical (blocks understanding of core features)
+        - High (significantly improves user experience)
+        - Medium (helpful improvement)
+        - Low (minor enhancement)
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: contribution_offer
+    attributes:
+      label: Contribution Offer
+      description: Are you willing to help improve this documentation?
+      options:
+        - label: I can write the improved documentation
+        - label: I can provide examples or code snippets
+        - label: I can review proposed changes
+        - label: I can test documentation with assistive technology
+        - label: I prefer to let others handle this
+
+  - type: textarea
+    id: related_issues
+    attributes:
+      label: Related Issues
+      description: Are there related documentation issues or feature requests?
+      placeholder: |
+        Link to any related:
+        - GitHub issues
+        - Discussions
+        - Pull requests
+        - External resources
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional Context
+      description: Any other context about this documentation issue
+      placeholder: |
+        Include any:
+        - Screenshots of confusing documentation
+        - Links to good documentation examples from other projects
+        - Feedback from other users
+        - Specific use cases that need documentation
+    validations:
+      required: false

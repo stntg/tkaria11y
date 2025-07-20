@@ -3,6 +3,7 @@
 ## Your Issues Were Valid! 🎯
 
 You reported two critical problems:
+
 1. **"There are still areas of the window that are not being themed correctly"**
 2. **"When disabling high contrast some areas of the window are still incorrectly themed"**
 
@@ -11,12 +12,14 @@ You reported two critical problems:
 ## Problems with the Original Implementation
 
 ### ❌ **Issue 1: Incomplete Theme Application**
+
 ```python
 # OLD: Only basic colors applied
 widget.configure(bg="black", fg="white")  # Too simplistic!
 ```
 
 **Problems:**
+
 - Only applied basic `bg` and `fg` colors
 - Didn't check what options each widget actually supported
 - Missed widget-specific properties (like `fieldbackground`, `troughcolor`, etc.)
@@ -24,18 +27,21 @@ widget.configure(bg="black", fg="white")  # Too simplistic!
 - Option database was incomplete
 
 ### ❌ **Issue 2: Poor Theme Removal**
+
 ```python
 # OLD: Inadequate restoration
 standard_colors = {"bg": "SystemButtonFace", ...}  # Too basic!
 ```
 
 **Problems:**
+
 - Didn't properly clear the option database
 - Used generic system colors instead of widget-specific restoration
 - Didn't handle all the properties that were themed
 - Left some widgets in inconsistent states
 
 ### ❌ **Issue 3: Inconsistent Coverage**
+
 - Some widget types were missed entirely
 - Nested frames and containers weren't handled properly
 - Dynamic widgets weren't always themed correctly
@@ -46,6 +52,7 @@ standard_colors = {"bg": "SystemButtonFace", ...}  # Too basic!
 ### ✅ **Fix 1: Comprehensive Theme Application**
 
 #### **Smart Widget Inspection**
+
 ```python
 # NEW: Check what each widget actually supports
 config_options = widget.configure()
@@ -59,6 +66,7 @@ if 'selectbackground' in config_options:
 ```
 
 #### **Complete Option Database Setup**
+
 ```python
 # NEW: Comprehensive option database with high priority
 widget_types = [
@@ -75,6 +83,7 @@ for widget_type in widget_types:
 ```
 
 #### **Widget-Specific Handling**
+
 ```python
 # NEW: Special handling for each widget type
 if widget_class == "Entry":
@@ -94,6 +103,7 @@ elif widget_class in ["Checkbutton", "Radiobutton"]:
 ### ✅ **Fix 2: Proper Theme Removal**
 
 #### **Complete Option Database Restoration**
+
 ```python
 # NEW: Proper restoration with system colors
 @classmethod
@@ -110,6 +120,7 @@ def _restore_option_database(cls, root: tk.Tk) -> None:
 ```
 
 #### **Comprehensive Widget Restoration**
+
 ```python
 # NEW: Mirror the application process for removal
 @classmethod
@@ -129,6 +140,7 @@ def _restore_widget(cls, widget: tk.Misc) -> None:
 ### ✅ **Fix 3: Complete Coverage**
 
 #### **Systematic Color Constants**
+
 ```python
 # NEW: Complete color scheme with proper system colors for restoration
 COLORS = {
@@ -148,6 +160,7 @@ STANDARD_COLORS = {
 ```
 
 #### **Robust Application Process**
+
 ```python
 # NEW: Multi-step application process
 @classmethod
@@ -168,6 +181,7 @@ def apply(cls, root: tk.Tk) -> None:
 ### 🧪 **Comprehensive Test Suite**
 
 I created `robust_theme_test.py` which tests:
+
 - **All widget types**: Button, Label, Entry, Text, Frame, Canvas, Listbox, Scale, Checkbutton, Radiobutton, Menu, Scrollbar, PanedWindow, etc.
 - **Nested containers**: Frames within frames, LabelFrames, complex layouts
 - **Dynamic widgets**: Widgets created after theme application
@@ -177,7 +191,8 @@ I created `robust_theme_test.py` which tests:
 ### 📊 **Test Results**
 
 **✅ Theme Application:**
-```
+
+```text
 Root window    : bg=black           fg=N/A
 Name entry     : bg=black           fg=white
 Text widget    : bg=black           fg=white
@@ -187,7 +202,8 @@ Canvas         : bg=black           fg=N/A
 ```
 
 **✅ Theme Removal:**
-```
+
+```text
 Root window    : bg=SystemButtonFace fg=N/A
 Name entry     : bg=SystemButtonFace fg=SystemButtonText
 Text widget    : bg=SystemButtonFace fg=SystemButtonText
@@ -199,36 +215,44 @@ Canvas         : bg=SystemButtonFace fg=N/A
 ## Key Improvements Made
 
 ### 🎯 **1. Complete Widget Coverage**
+
 - **Before**: Only basic widgets themed
 - **After**: ALL tkinter widget types supported
 
 ### 🎯 **2. Proper Property Handling**
+
 - **Before**: Only `bg` and `fg` colors
 - **After**: All color properties (`selectbackground`, `activebackground`, `insertbackground`, `troughcolor`, `selectcolor`, etc.)
 
 ### 🎯 **3. Smart Widget Inspection**
+
 - **Before**: Assumed all widgets support all properties
 - **After**: Check what each widget actually supports before configuring
 
 ### 🎯 **4. Comprehensive Option Database**
+
 - **Before**: Basic option database entries
 - **After**: Complete coverage with high priority for all widget types
 
 ### 🎯 **5. Proper State Management**
+
 - **Before**: No tracking of themed state
 - **After**: Track themed roots, prevent double-application, proper cleanup
 
 ### 🎯 **6. Complete Restoration**
+
 - **Before**: Incomplete restoration leaving artifacts
 - **After**: Mirror the application process for complete restoration
 
 ### 🎯 **7. System Color Integration**
+
 - **Before**: Hardcoded fallback colors
 - **After**: Proper Windows system colors for restoration
 
 ## Usage Examples
 
 ### 🚀 **Simple Usage (No Changes Required)**
+
 ```python
 from tkaria11y.themes import HighContrastTheme
 import tkinter as tk
@@ -247,6 +271,7 @@ HighContrastTheme.remove(root)
 ```
 
 ### 🎛️ **With AccessibleApp**
+
 ```python
 from tkaria11y import AccessibleApp
 
@@ -258,6 +283,7 @@ app.toggle_high_contrast()  # Complete restoration
 ```
 
 ### 🔍 **Testing Your Own Apps**
+
 ```python
 # Check if theme is applied
 if HighContrastTheme.is_applied(root):
@@ -273,6 +299,7 @@ print(f"Widget foreground: {widget.cget('fg')}")
 ### ✅ **What Should Happen Now**
 
 **When Applying Theme:**
+
 1. **Main window background**: Any color → BLACK
 2. **All widget backgrounds**: Any color → BLACK  
 3. **All text**: Any color → WHITE
@@ -281,6 +308,7 @@ print(f"Widget foreground: {widget.cget('fg')}")
 6. **New widgets**: Automatically BLACK
 
 **When Removing Theme:**
+
 1. **Main window background**: BLACK → System default
 2. **All widget backgrounds**: BLACK → Original/system colors
 3. **All text**: WHITE → Original/system colors  

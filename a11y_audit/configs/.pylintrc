@@ -1,0 +1,179 @@
+[MASTER]
+# Pylint configuration for accessibility linting
+
+# Use multiple processes to speed up Pylint
+jobs = 0
+
+# Pickle collected data for later comparisons
+persistent = yes
+
+# Ignore paths
+ignore-paths = 
+    ^.*/__pycache__/.*$,
+    ^.*/\.git/.*$,
+    ^.*/build/.*$,
+    ^.*/dist/.*$,
+    ^.*/a11y_test_suite/.*$,
+    ^.*/a11y_audit/reports/.*$,
+    ^.*/a11y_audit/
+
+[MESSAGES CONTROL]
+# Disable specific messages
+disable = 
+    C0114,  # missing-module-docstring
+    C0115,  # missing-class-docstring
+    C0116,  # missing-function-docstring
+    R0903,  # too-few-public-methods
+    R0913,  # too-many-arguments
+    W0613,  # unused-argument (common in event handlers)
+    C0103,  # invalid-name (for GUI variables)
+
+# Enable specific accessibility-related checks
+enable = 
+    W0622,  # redefined-builtin
+    W0621,  # redefined-outer-name
+    C0411,  # wrong-import-order
+    C0412,  # ungrouped-imports
+    C0413,  # wrong-import-position
+
+[REPORTS]
+# Set the output format
+output-format = json
+
+# Don't display reports
+reports = no
+
+# Don't display score
+score = no
+
+[REFACTORING]
+# Maximum number of nested blocks for function / method body
+max-nested-blocks = 5
+
+# Maximum number of branch for function / method body
+max-branches = 12
+
+[BASIC]
+# Naming conventions for accessibility
+good-names = 
+    i, j, k,
+    ex, Run,
+    x, y, z,
+    id, ui,
+    tts, a11y,
+    bg, fg,
+    app, win
+
+# Regular expressions for naming conventions
+class-rgx = [A-Z_][a-zA-Z0-9]+$
+function-rgx = [a-z_][a-z0-9_]{2,30}$
+method-rgx = [a-z_][a-z0-9_]{2,30}$
+attr-rgx = [a-z_][a-z0-9_]{2,30}$
+argument-rgx = [a-z_][a-z0-9_]{2,30}$
+variable-rgx = [a-z_][a-z0-9_]{2,30}$
+const-rgx = (([A-Z_][A-Z0-9_]*)|(__.*__))$
+module-rgx = (([a-z_][a-z0-9_]*)|([A-Z][a-zA-Z0-9]+))$
+
+[FORMAT]
+# Maximum number of characters on a single line
+max-line-length = 88
+
+# Maximum number of lines in a module
+max-module-lines = 1000
+
+# String used as indentation unit
+indent-string = '    '
+
+[MISCELLANEOUS]
+# List of note tags to take in consideration
+notes = FIXME, XXX, TODO, HACK, BUG, ACCESSIBILITY, A11Y
+
+[SIMILARITIES]
+# Minimum lines number of a similarity
+min-similarity-lines = 4
+
+# Ignore comments when computing similarities
+ignore-comments = yes
+
+# Ignore docstrings when computing similarities
+ignore-docstrings = yes
+
+# Ignore imports when computing similarities
+ignore-imports = no
+
+[SPELLING]
+# List of comma separated words that should not be checked
+spelling-ignore-words = 
+    tkinter,
+    pyttsx3,
+    tkaria11y,
+    a11y,
+    tts,
+    aria,
+    wcag,
+    gui,
+    ui,
+    api,
+    rgb,
+    rgba,
+    bg,
+    fg
+
+[TYPECHECK]
+# List of decorators that produce context managers
+contextmanager-decorators = contextlib.contextmanager
+
+# Tells whether missing members accessed in mixin class should be ignored
+ignore-mixin-members = yes
+
+# List of module names for which member attributes should not be checked
+ignored-modules = tkinter, tkinter.ttk
+
+[VARIABLES]
+# Tells whether we should check for unused import in __init__ files
+init-import = no
+
+# A regular expression matching the name of dummy variables
+dummy-variables-rgx = _+$|(_[a-zA-Z0-9_]*[a-zA-Z0-9]+?$)|dummy|^ignored_|^unused_
+
+[CLASSES]
+# List of method names used to declare (i.e. assign) instance attributes
+defining-attr-methods = __init__, __new__, setUp, __post_init__
+
+# List of member names, which should be excluded from the protected access warning
+exclude-protected = _asdict, _fields, _replace, _source, _make
+
+# List of valid names for the first argument in a class method
+valid-classmethod-first-arg = cls
+
+[DESIGN]
+# Maximum number of arguments for function / method
+max-args = 8
+
+# Maximum number of attributes for a class
+max-attributes = 15
+
+# Maximum number of boolean expressions in an if statement
+max-bool-expr = 5
+
+# Maximum number of locals for function / method body
+max-locals = 20
+
+# Maximum number of parents for a class
+max-parents = 7
+
+# Maximum number of public methods for a class
+max-public-methods = 25
+
+# Maximum number of return / yield for function / method body
+max-returns = 6
+
+# Maximum number of statements in function / method body
+max-statements = 50
+
+# Minimum number of public methods for a class
+min-public-methods = 1
+
+[EXCEPTIONS]
+# Exceptions that will emit a warning when being caught
+overgeneral-exceptions = Exception

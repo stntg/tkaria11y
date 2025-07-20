@@ -2,7 +2,7 @@
 
 This directory demonstrates how the `tkaria11y-migrate` tool works to convert existing tkinter applications to use accessible widgets.
 
-## Files in this demo:
+## Files in this demo
 
 - **`before_migration.py`** - A typical tkinter calculator app before migration
 - **`simple_form.py`** - A form with various tkinter widgets before migration  
@@ -37,18 +37,21 @@ The migration tool automatically transforms your existing tkinter code to use tk
 ## Running the Demo
 
 ### Option 1: Run the demonstration script
+
 ```bash
 cd examples/migration_demo
 python demo_migration.py
 ```
 
 This will:
+
 - Process the example files
 - Show you what changes were made
 - Create `after_*.py` files with the migrated code
 - Display a summary of transformations
 
 ### Option 2: Use the actual migration tool
+
 ```bash
 # From the project root
 python -m tkaria11y.scripts.migrate examples/migration_demo/before_migration.py
@@ -59,7 +62,8 @@ python -m tkaria11y.scripts.migrate examples/migration_demo/ --interactive
 
 ## Example Transformation
 
-### Before Migration:
+### Before Migration
+
 ```python
 import tkinter as tk
 
@@ -69,7 +73,8 @@ entry = tk.Entry(root)
 label = tk.Label(root, text="Enter your name:")
 ```
 
-### After Migration:
+### After Migration
+
 ```python
 import tkinter as tk
 from tkaria11y.widgets import AccessibleButton, AccessibleEntry, AccessibleLabel
@@ -97,6 +102,7 @@ python -m tkaria11y.scripts.migrate myapp.py --interactive
 ```
 
 This will:
+
 - Show you each proposed change
 - Ask for confirmation before applying
 - Let you skip changes you don't want

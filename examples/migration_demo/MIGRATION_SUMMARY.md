@@ -6,12 +6,14 @@ The `tkaria11y-migrate` tool automatically converts existing tkinter application
 
 ## Real Example - What We Just Demonstrated
 
-### Command Used:
+### Command Used
+
 ```bash
 python -m tkaria11y.scripts.migrate examples/migration_demo/test_file.py
 ```
 
-### Before Migration:
+### Before Migration
+
 ```python
 #!/usr/bin/env python3
 """Test file for migration demonstration"""
@@ -34,7 +36,8 @@ def create_simple_app():
     return root
 ```
 
-### After Migration:
+### After Migration
+
 ```python
 #!/usr/bin/env python3
 """Test file for migration demonstration"""
@@ -68,11 +71,13 @@ def create_simple_app():
 
 ## What Users Get After Migration
 
-### For Sighted Users:
+### For Sighted Users
+
 - ✅ **No changes** - App looks and works exactly the same
 - ✅ **Same performance** - No slowdown or different behavior
 
-### For Users with Disabilities:
+### For Users with Disabilities
+
 - ✅ **Screen Reader Support** - NVDA, JAWS, VoiceOver can read all controls
 - ✅ **Text-to-Speech** - Widgets announce themselves when focused
 - ✅ **Better Keyboard Navigation** - Improved Tab navigation
@@ -80,7 +85,8 @@ def create_simple_app():
 
 ## Migration Tool Features
 
-### Automatic Transformations:
+### Automatic Transformations
+
 - `tk.Button` → `AccessibleButton`
 - `tk.Label` → `AccessibleLabel`
 - `tk.Entry` → `AccessibleEntry`
@@ -90,7 +96,8 @@ def create_simple_app():
 - `tk.Scale` → `AccessibleScale`
 - `tk.Listbox` → `AccessibleListbox`
 
-### Smart Features:
+### Smart Features
+
 - **Auto-Import Management** - Adds only needed imports
 - **Text-Based Names** - Extracts `accessible_name` from `text=` parameters
 - **Parameter Preservation** - Keeps all your existing widget settings
@@ -98,7 +105,8 @@ def create_simple_app():
 
 ## Usage Examples
 
-### Basic Migration:
+### Basic Migration
+
 ```bash
 # Single file
 python -m tkaria11y.scripts.migrate myapp.py
@@ -110,7 +118,8 @@ python -m tkaria11y.scripts.migrate ./my_project/
 python -m tkaria11y.scripts.migrate myapp.py --interactive
 ```
 
-### Real-World Workflow:
+### Real-World Workflow
+
 ```bash
 # 1. Backup your code
 git commit -am "Before accessibility migration"
@@ -161,6 +170,7 @@ After migration, consider:
 ## Why This Matters
 
 Making your tkinter applications accessible:
+
 - 📈 **Expands your user base** - Includes users with disabilities
 - ⚖️ **Legal compliance** - Meets accessibility requirements
 - 🌟 **Better UX for everyone** - Improved keyboard navigation benefits all users
