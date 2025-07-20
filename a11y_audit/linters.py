@@ -10,6 +10,7 @@ for analyzing Python code and documentation for accessibility compliance.
 import ast
 import re
 import subprocess
+import shutil
 import json
 from pathlib import Path
 from typing import Dict, Any, List, Optional
@@ -26,9 +27,17 @@ class AccessibilityLinter:
     def run_flake8_audit(self) -> Dict[str, Any]:
         """Run flake8 with accessibility-focused configuration."""
         try:
+            # Find flake8 executable
+            flake8_path = shutil.which("flake8")
+            if not flake8_path:
+                return {
+                    "status": "SKIPPED",
+                    "message": "flake8 not available - install with: pip install flake8",
+                }
+
             # Check if flake8 is available
             result = subprocess.run(
-                ["flake8", "--version"], capture_output=True, text=True
+                [flake8_path, "--version"], capture_output=True, text=True
             )
             if result.returncode != 0:
                 return {
@@ -38,7 +47,7 @@ class AccessibilityLinter:
 
             # Build flake8 command with config
             config_file = get_config_path("flake8")
-            cmd = ["flake8"]
+            cmd = [flake8_path]
 
             if config_file.exists():
                 cmd.extend(["--config", str(config_file)])
@@ -76,9 +85,17 @@ class AccessibilityLinter:
     def run_pylint_audit(self) -> Dict[str, Any]:
         """Run pylint with accessibility-focused configuration."""
         try:
+            # Find pylint executable
+            pylint_path = shutil.which("pylint")
+            if not pylint_path:
+                return {
+                    "status": "SKIPPED",
+                    "message": "pylint not available - install with: pip install pylint",
+                }
+
             # Check if pylint is available
             result = subprocess.run(
-                ["pylint", "--version"], capture_output=True, text=True
+                [pylint_path, "--version"], capture_output=True, text=True
             )
             if result.returncode != 0:
                 return {
@@ -88,7 +105,7 @@ class AccessibilityLinter:
 
             # Build pylint command with config
             config_file = get_config_path("pylint")
-            cmd = ["pylint", "--output-format=json"]
+            cmd = [pylint_path, "--output-format=json"]
 
             if config_file.exists():
                 cmd.extend(["--rcfile", str(config_file)])
@@ -136,9 +153,17 @@ class AccessibilityLinter:
     def run_mypy_audit(self) -> Dict[str, Any]:
         """Run mypy type checking with accessibility focus."""
         try:
+            # Find mypy executable
+            mypy_path = shutil.which("mypy")
+            if not mypy_path:
+                return {
+                    "status": "SKIPPED",
+                    "message": "mypy not available - install with: pip install mypy",
+                }
+
             # Check if mypy is available
             result = subprocess.run(
-                ["mypy", "--version"], capture_output=True, text=True
+                [mypy_path, "--version"], capture_output=True, text=True
             )
             if result.returncode != 0:
                 return {
@@ -148,7 +173,7 @@ class AccessibilityLinter:
 
             # Build mypy command with config
             config_file = get_config_path("mypy")
-            cmd = ["mypy"]
+            cmd = [mypy_path]
 
             if config_file.exists():
                 cmd.extend(["--config-file", str(config_file)])
