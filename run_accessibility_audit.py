@@ -13,6 +13,7 @@ import time
 import ast
 import re
 import subprocess
+import shutil
 from pathlib import Path
 from typing import Dict, Any, List
 
@@ -49,9 +50,17 @@ class AccessibilityAuditor:
         print("Running flake8 accessibility audit...")
 
         try:
+            # Find flake8 executable
+            flake8_path = shutil.which("flake8")
+            if not flake8_path:
+                return {
+                    "status": "SKIPPED",
+                    "message": "flake8 not available - install with: pip install flake8",
+                }
+
             # Check if flake8 is available
             result = subprocess.run(
-                ["flake8", "--version"], capture_output=True, text=True
+                [flake8_path, "--version"], capture_output=True, text=True
             )
             if result.returncode != 0:
                 return {
@@ -60,7 +69,7 @@ class AccessibilityAuditor:
                 }
 
             # Build flake8 command
-            cmd = ["flake8", "--max-line-length=88", "--ignore=E203,W503"]
+            cmd = [flake8_path, "--max-line-length=88", "--ignore=E203,W503"]
 
             # Add source directories
             for source_dir in self.source_dirs:
