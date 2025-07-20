@@ -93,7 +93,8 @@ button.pack(padx=10, pady=10)
 app.mainloop()
 ```
 
-### Try it out:
+### Try it out
+
 - **Tab/Shift-Tab** to navigate between controls
 - **Focus events** trigger TTS announcements  
 - **Press F2** to toggle the accessibility inspector
@@ -177,6 +178,7 @@ Explore the `examples/` directory for comprehensive demos:
 - **`migration_demo/`**: Before/after migration examples
 
 Run any example:
+
 ```bash
 python examples/minimal_app.py
 ```
