@@ -22,17 +22,25 @@ def pytest_collection_modifyitems(config, items):
     # Test if GUI is available
     gui_available = True
     try:
+        # Try to create a minimal Tk instance to test display availability
         root = tk.Tk()
+        root.withdraw()  # Hide the window immediately
+        root.update_idletasks()  # Process any pending events
         root.destroy()
-    except (tk.TclError, ImportError, OSError):
+    except (tk.TclError, ImportError, OSError, RuntimeError) as e:
         # GUI not available - could be headless environment or missing display
         gui_available = False
+        print(f"GUI not available: {e}")
 
     if not gui_available:
         for item in items:
-            if "gui" in item.keywords or any(
+            # Skip tests marked with @pytest.mark.gui
+            if "gui" in item.keywords:
+                item.add_marker(skip_gui)
+            # Also skip tests that contain GUI-related keywords in their names
+            elif any(
                 keyword in item.name.lower()
-                for keyword in ["app", "theme", "integration"]
+                for keyword in ["app", "theme", "integration", "mixin"]
             ):
                 item.add_marker(skip_gui)
 

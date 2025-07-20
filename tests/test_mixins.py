@@ -1,5 +1,6 @@
 # tests/test_mixins.py
 
+import pytest
 import tkinter as tk
 from tkaria11y.mixins import AccessibleMixin
 
@@ -10,6 +11,7 @@ class AccessibleTestWidget(AccessibleMixin, tk.Button):
     pass
 
 
+@pytest.mark.gui
 def test_accessible_mixin_attributes():
     """Test AccessibleMixin sets attributes correctly"""
     root = tk.Tk()
@@ -27,6 +29,7 @@ def test_accessible_mixin_attributes():
     root.destroy()
 
 
+@pytest.mark.gui
 def test_accessible_mixin_default_attributes():
     """Test AccessibleMixin with default attributes"""
     root = tk.Tk()
@@ -39,6 +42,7 @@ def test_accessible_mixin_default_attributes():
     root.destroy()
 
 
+@pytest.mark.gui
 def test_accessible_mixin_event_binding():
     """Test AccessibleMixin binds events when accessible_name is provided"""
     root = tk.Tk()
@@ -52,6 +56,7 @@ def test_accessible_mixin_event_binding():
     root.destroy()
 
 
+@pytest.mark.gui
 def test_accessible_mixin_no_event_binding():
     """Test AccessibleMixin doesn't bind FocusIn when no accessible_name"""
     root = tk.Tk()
