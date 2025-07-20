@@ -1,166 +1,165 @@
-`markdown
-
-Contributing to tkaria11y
+# Contributing to tkaria11y
 
 Thank you for your interest in contributing to tkaria11y! We welcome all kinds of contributions—from bug reports and documentation fixes to new features and plugins. This guide walks you through the process and explains our expectations for code style, testing, and collaboration.
 
----
+## Table of Contents
 
-Table of Contents
+- [Filing Issues](#filing-issues)
+- [Getting the Code](#getting-the-code)
+- [Setting Up Your Environment](#setting-up-your-environment)
+- [Branching Strategy](#branching-strategy)
+- [Coding Guidelines](#coding-guidelines)
+  - [Code Style](#code-style)
+  - [Type Checking](#type-checking)
+  - [Testing](#testing)
+  - [Stub Generation](#stub-generation)
+  - [Documentation Updates](#documentation-updates)
+- [Submitting a Pull Request](#submitting-a-pull-request)
+- [Code of Conduct](#code-of-conduct)
+- [Release Process](#release-process)
+- [Additional Resources](#additional-resources)
 
-- Filing Issues  
-- Getting the Code  
-- Setting Up Your Environment  
-- Branching Strategy  
-- Coding Guidelines  
-  - Code Style  
-  - Type Checking  
-  - Testing  
-  - Stub Generation  
-  - Documentation Updates  
-- Submitting a Pull Request  
-- Code of Conduct  
-- Release Process  
-- Additional Resources
+## Filing Issues
 
----
-
-Filing Issues
-
-1. Search existing issues to avoid duplicates.  
-2. Open a new issue with a clear title and description.  
-3. Include steps to reproduce, expected vs. actual behavior, and environment details (OS, Python version).  
+1. Search existing issues to avoid duplicates.
+2. Open a new issue with a clear title and description.
+3. Include steps to reproduce, expected vs. actual behavior, and environment details (OS, Python version).
 4. Tag the issue with appropriate labels (e.g., bug, feature-request, question).
 
----
+## Getting the Code
 
-Getting the Code
-
-`bash
+```bash
 git clone git@github.com:stntg/tkaria11y.git
 cd tkaria11y
-`
+```
 
----
-
-Setting Up Your Environment
+## Setting Up Your Environment
 
 1. Create a virtual environment:
-   `bash
+
+   ```bash
    python3 -m venv .venv
    source .venv/bin/activate
-   `
+   ```
+
 2. Install the package and dev dependencies:
-   `bash
+
+   ```bash
    pip install --upgrade pip
    pip install ".[dev]"
-   `
+   ```
+
 3. Generate initial type stubs:
-   `bash
+
+   ```bash
    python -m tkaria11y.scripts.generate_stubs
-   `
+   ```
 
----
+## Branching Strategy
 
-Branching Strategy
-
-- Always branch off main for new work.  
-- Name branches descriptively:  
-  - feature/<short-description>  
-  - bugfix/<short-description>  
-  - docs/<short-description>  
+- Always branch off main for new work.
+- Name branches descriptively:
+  - `feature/short-description`
+  - `bugfix/short-description`
+  - `docs/short-description`
 - Keep branches focused on a single change or feature.
 
----
+## Coding Guidelines
 
-Coding Guidelines
+### Code Style
 
-Code Style
-
-- Follow PEP 8 for Python code.  
+- Follow PEP 8 for Python code.
 - Use black for formatting:
-  `bash
+
+  ```bash
   black .
-  `
+  ```
+
 - Lint with flake8 and fix any errors:
-  `bash
+
+  ```bash
   flake8 tkaria11y tests
-  `
+  ```
 
-Type Checking
+### Type Checking
 
-- Keep type hints up to date in code and stubs.  
+- Keep type hints up to date in code and stubs.
 - Run mypy in strict mode:
-  `bash
+
+  ```bash
   mypy tkaria11y
-  `
+  ```
 
-Testing
+### Testing
 
-- Write tests for all new functionality under the tests/ folder.  
+- Write tests for all new functionality under the `tests/` folder.
 - Use pytest for test discovery:
-  `bash
+
+  ```bash
   pytest --maxfail=1 --disable-warnings -q
-  `
+  ```
+
 - Aim for high coverage, especially on accessibility behaviors and edge cases.
 
-Stub Generation
+### Stub Generation
 
 - Whenever WIDGETMAP changes, regenerate stubs:
-  `bash
+
+  ```bash
   python -m tkaria11y.scripts.generate_stubs
-  `
-- Ensure tkaria11y/stubs/widgets.pyi matches the mapped widgets.
+  ```
 
-Documentation Updates
+- Ensure `tkaria11y/stubs/widgets.pyi` matches the mapped widgets.
 
-- Update README.md, docs/, and inline docstrings for new features.  
-- Follow the style of existing documentation in docs/index.md.  
+### Documentation Updates
+
+- Update README.md, docs/, and inline docstrings for new features.
+- Follow the style of existing documentation in `docs/index.md`.
 - When adding public APIs, include examples and usage snippets.
 
----
-
-Submitting a Pull Request
+## Submitting a Pull Request
 
 1. Push your branch to GitHub:
-   `bash
+
+   ```bash
    git push origin feature/your-feature
-   `
-2. Open a Pull Request against main.  
+   ```
+
+2. Open a Pull Request against main.
+
 3. In your PR description:
-   - Reference related issues (e.g., Closes #123).  
-   - Summarize your changes and rationale.  
-   - List any breaking changes or migration steps.  
-4. Ensure CI passes all checks (lint, type, tests, stub generation).  
+   - Reference related issues (e.g., Closes #123).
+   - Summarize your changes and rationale.
+   - List any breaking changes or migration steps.
+
+4. Ensure CI passes all checks (lint, type, tests, stub generation).
+
 5. Address review feedback; keep discussions focused and respectful.
 
----
-
-Code of Conduct
+## Code of Conduct
 
 This project follows the Contributor Covenant Code of Conduct. By participating, you agree to abide by its terms.
 
----
+## Release Process
 
-Release Process
+1. Bump version in `tkaria11y/__init__.py` and `pyproject.toml`.
 
-1. Bump version in tkaria11y/__init__.py and pyproject.toml.  
-2. Tag the commit:  
-   `bash
+2. Tag the commit:
+
+   ```bash
    git tag vX.Y.Z
    git push --tags
-   `
-3. CI will automatically publish to PyPI when a v tag is pushed.  
+   ```
+
+3. CI will automatically publish to PyPI when a v tag is pushed.
+
 4. Update CHANGELOG.md with notable changes for the release.
 
----
+## Additional Resources
 
-Additional Resources
+- Project roadmap: [ROADMAP.md](ROADMAP.md)
+- Issue tracker on GitHub
+- Official ARIA Authoring Practices: <https://www.w3.org/TR/wai-aria-practices/>
+- WCAG guidelines: <https://www.w3.org/WAI/standards-guidelines/wcag/>
 
-- Project roadmap: ROADMAP.md  
-- Issue tracker on GitHub  
-- Official ARIA Authoring Practices: https://www.w3.org/TR/wai-aria-practices/  
-- WCAG guidelines: https://www.w3.org/WAI/standards-guidelines/wcag/
-
-Thank you for helping make tkaria11y better and more accessible!  
-`
+Thank you for helping make tkaria11y better and more accessible!

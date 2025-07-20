@@ -38,7 +38,7 @@ Instances of abusive, harassing, or otherwise unacceptable behavior in any proje
 If you are subject to or witness unacceptable behavior, or have any other concerns, please notify the project maintainers as soon as possible through one of these channels:
 
 - **GitHub Issues**: [Create a private issue](https://github.com/stntg/tkaria11y/issues) (mark as confidential if needed)
-- **Direct Email**: Contact the project maintainer at **stantgriffiths@gmail.com**
+- **Direct Email**: Contact the project maintainer at **<stantgriffiths@gmail.com>**
 - **GitHub Discussions**: Use the [community discussions](https://github.com/stntg/tkaria11y/discussions) for general concerns
 
 All complaints will be reviewed and investigated promptly and fairly.
