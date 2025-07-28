@@ -218,7 +218,7 @@ We welcome accessibility advocates, Tkinter hackers, and curious contributors of
 
 ## License
 
-MIT © Stan Griffiths
+MIT © Stan Griffiths    
 See LICENSE for details.
 
 ---
