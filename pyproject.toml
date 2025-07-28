@@ -71,3 +71,9 @@ include = ["tkaria11y*"]
 
 [tool.setuptools.package-data]
 tkaria11y = ["py.typed", "*.pyi", "stubs/*.pyi"]
+
+[tool.black]
+exclude = '''
+/(
+  generated_stubs
+)/
