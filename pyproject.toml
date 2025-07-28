@@ -77,3 +77,4 @@ exclude = '''
 /(
   generated_stubs
 )/
+'''
