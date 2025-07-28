@@ -206,13 +206,39 @@ class AccessibilityAuditor:
         duration = end_time - self.start_time
 
         report = []
+
+        # Build report sections
+        self._add_report_header(report, duration)
+        self._add_environment_info(report)
+        self._add_audit_scope(report)
+
+        stats = self._calculate_statistics()
+        self._add_results_summary(report, stats)
+        self._add_statistics_section(report, stats)
+
+        if stats["total_issues"] > 0:
+            self._add_severity_breakdown(report, stats)
+
+        category_counts = self._calculate_category_counts()
+        if category_counts:
+            self._add_category_breakdown(report, category_counts)
+
+        self._add_top_issues(report)
+        self._add_recommendations(report, stats, category_counts)
+        self._add_next_steps(report)
+
+        return "\n".join(report)
+
+    def _add_report_header(self, report: list, duration: float) -> None:
+        """Add report header with basic information."""
         report.append("ACCESSIBILITY COMPLIANCE AUDIT REPORT")
         report.append("=" * 70)
         report.append(f"Audit Date: {time.strftime('%Y-%m-%d %H:%M:%S')}")
         report.append(f"Duration: {duration:.2f} seconds")
         report.append("")
 
-        # Environment information
+    def _add_environment_info(self, report: list) -> None:
+        """Add environment information to report."""
         import platform
 
         report.append("ENVIRONMENT:")
@@ -221,31 +247,64 @@ class AccessibilityAuditor:
         report.append(f"  Working Directory: {Path.cwd()}")
         report.append("")
 
-        # Audit scope
+    def _add_audit_scope(self, report: list) -> None:
+        """Add audit scope information to report."""
         report.append("AUDIT SCOPE:")
         for source_dir in self.source_dirs:
             if source_dir.exists():
                 py_files = list(source_dir.rglob("*.py"))
                 md_files = list(source_dir.rglob("*.md"))
                 report.append(
-                    f"  {source_dir.name}: {len(py_files)} Python files, {len(md_files)} Markdown files"
+                    f"  {source_dir.name}: {len(py_files)} Python files, "
+                    f"{len(md_files)} Markdown files"
                 )
         report.append("")
 
-        # Results summary
-        report.append("AUDIT RESULTS SUMMARY:")
+    def _calculate_statistics(self) -> dict:
+        """Calculate audit statistics from results."""
+        stats = {
+            "total_issues": 0,
+            "error_issues": 0,
+            "warning_issues": 0,
+            "info_issues": 0,
+            "tools_run": 0,
+            "tools_skipped": 0,
+            "tools_error": 0,
+        }
 
-        total_issues = 0
-        error_issues = 0
-        warning_issues = 0
-        info_issues = 0
-        tools_run = 0
-        tools_skipped = 0
-        tools_error = 0
+        for result in self.results.values():
+            status = result.get("status", "UNKNOWN")
+            issues_count = result.get("issues_found", 0)
+
+            if status == "COMPLETED":
+                stats["tools_run"] += 1
+                stats["total_issues"] += issues_count
+                self._count_issues_by_severity(result, stats)
+            elif status == "SKIPPED":
+                stats["tools_skipped"] += 1
+            elif status == "ERROR":
+                stats["tools_error"] += 1
+
+        return stats
+
+    def _count_issues_by_severity(self, result: dict, stats: dict) -> None:
+        """Count issues by severity level."""
+        if "issues" in result:
+            for issue in result["issues"]:
+                severity = issue.get("severity", "warning")
+                if severity == "error":
+                    stats["error_issues"] += 1
+                elif severity == "warning":
+                    stats["warning_issues"] += 1
+                elif severity == "info":
+                    stats["info_issues"] += 1
+
+    def _add_results_summary(self, report: list, stats: dict) -> None:
+        """Add results summary section to report."""
+        report.append("AUDIT RESULTS SUMMARY:")
 
         for tool_name, result in self.results.items():
             status = result.get("status", "UNKNOWN")
-            issues_count = result.get("issues_found", 0)
             message = result.get("message", "No message")
 
             status_symbol = {"COMPLETED": "✓", "SKIPPED": "○", "ERROR": "✗"}.get(
@@ -255,104 +314,110 @@ class AccessibilityAuditor:
             report.append(f"{status_symbol} {tool_name.upper()}: {status}")
             report.append(f"  {message}")
 
-            if status == "COMPLETED":
-                tools_run += 1
-                total_issues += issues_count
-
-                # Count issues by severity
-                if "issues" in result:
-                    for issue in result["issues"]:
-                        severity = issue.get("severity", "warning")
-                        if severity == "error":
-                            error_issues += 1
-                        elif severity == "warning":
-                            warning_issues += 1
-                        elif severity == "info":
-                            info_issues += 1
-            elif status == "SKIPPED":
-                tools_skipped += 1
-            elif status == "ERROR":
-                tools_error += 1
-
         report.append("")
+
+    def _add_statistics_section(self, report: list, stats: dict) -> None:
+        """Add statistics section to report."""
         report.append("STATISTICS:")
-        report.append(f"  Tools run successfully: {tools_run}")
-        report.append(f"  Tools skipped: {tools_skipped}")
-        report.append(f"  Tools with errors: {tools_error}")
-        report.append(f"  Total issues found: {total_issues}")
+        report.append(f"  Tools run successfully: {stats['tools_run']}")
+        report.append(f"  Tools skipped: {stats['tools_skipped']}")
+        report.append(f"  Tools with errors: {stats['tools_error']}")
+        report.append(f"  Total issues found: {stats['total_issues']}")
         report.append("")
 
-        if total_issues > 0:
-            report.append("ISSUES BY SEVERITY:")
-            if error_issues > 0:
-                report.append(f"  ✗ Errors: {error_issues}")
-            if warning_issues > 0:
-                report.append(f"  ⚠ Warnings: {warning_issues}")
-            if info_issues > 0:
-                report.append(f"  ℹ Info: {info_issues}")
-            report.append("")
+    def _add_severity_breakdown(self, report: list, stats: dict) -> None:
+        """Add severity breakdown section to report."""
+        report.append("ISSUES BY SEVERITY:")
+        if stats["error_issues"] > 0:
+            report.append(f"  ✗ Errors: {stats['error_issues']}")
+        if stats["warning_issues"] > 0:
+            report.append(f"  ⚠ Warnings: {stats['warning_issues']}")
+        if stats["info_issues"] > 0:
+            report.append(f"  ℹ Info: {stats['info_issues']}")
+        report.append("")
 
-        # Issue breakdown by category
+    def _calculate_category_counts(self) -> dict:
+        """Calculate issue counts by category."""
         category_counts = {}
         for tool_result in self.results.values():
             if "issues" in tool_result:
                 for issue in tool_result["issues"]:
                     category = issue.get("category", "general")
                     category_counts[category] = category_counts.get(category, 0) + 1
+        return category_counts
 
-        if category_counts:
-            report.append("ISSUES BY CATEGORY:")
-            for category, count in sorted(category_counts.items()):
-                report.append(f"  {category.title()}: {count}")
-            report.append("")
+    def _add_category_breakdown(self, report: list, category_counts: dict) -> None:
+        """Add category breakdown section to report."""
+        report.append("ISSUES BY CATEGORY:")
+        for category, count in sorted(category_counts.items()):
+            report.append(f"  {category.title()}: {count}")
+        report.append("")
 
-        # Top issues
+    def _add_top_issues(self, report: list) -> None:
+        """Add top issues section to report."""
         all_issues = []
         for tool_result in self.results.values():
             if "issues" in tool_result:
                 all_issues.extend(tool_result["issues"])
 
-        if all_issues:
-            # Group by message for top issues
-            message_counts = {}
-            for issue in all_issues:
-                msg = issue.get("message", "Unknown issue")
-                message_counts[msg] = message_counts.get(msg, 0) + 1
+        if not all_issues:
+            return
 
-            top_issues = sorted(
-                message_counts.items(), key=lambda x: x[1], reverse=True
-            )[:5]
+        # Group by message for top issues
+        message_counts = {}
+        for issue in all_issues:
+            msg = issue.get("message", "Unknown issue")
+            message_counts[msg] = message_counts.get(msg, 0) + 1
 
-            if top_issues:
-                report.append("TOP ISSUES:")
-                for i, (message, count) in enumerate(top_issues, 1):
-                    report.append(f"  {i}. {message} ({count} occurrences)")
-                report.append("")
+        top_issues = sorted(message_counts.items(), key=lambda x: x[1], reverse=True)[
+            :5
+        ]
 
-        # Recommendations
+        if top_issues:
+            report.append("TOP ISSUES:")
+            for i, (message, count) in enumerate(top_issues, 1):
+                report.append(f"  {i}. {message} ({count} occurrences)")
+            report.append("")
+
+    def _add_recommendations(
+        self, report: list, stats: dict, category_counts: dict
+    ) -> None:
+        """Add recommendations section to report."""
         report.append("RECOMMENDATIONS:")
 
-        if tools_skipped > 0:
+        if stats["tools_skipped"] > 0:
             report.append("  SETUP:")
             report.append("    • Install missing linting tools:")
             report.append("      pip install flake8 pylint mypy")
 
-        if error_issues > 0:
+        if stats["error_issues"] > 0:
             report.append("  CRITICAL:")
             report.append(
-                f"    • Fix {error_issues} error-level accessibility issues immediately"
+                f"    • Fix {stats['error_issues']} error-level accessibility issues immediately"
             )
             report.append(
                 "    • These issues may prevent proper accessibility functionality"
             )
 
-        if warning_issues > 0:
+        if stats["warning_issues"] > 0:
             report.append("  IMPORTANT:")
             report.append(
-                f"    • Review and address {warning_issues} warning-level issues"
+                f"    • Review and address {stats['warning_issues']} warning-level issues"
             )
             report.append("    • These issues may impact accessibility experience")
 
+        self._add_category_recommendations(report, category_counts)
+
+        if stats["total_issues"] == 0 and stats["tools_run"] > 0:
+            report.append("  ✓ EXCELLENT:")
+            report.append("    • No accessibility issues found!")
+            report.append("    • Your codebase follows accessibility best practices")
+            report.append("    • Consider running periodic audits to maintain quality")
+
+    def _add_category_recommendations(
+        self, report: list, category_counts: dict
+    ) -> None:
+        """Add category-specific recommendations."""
         if "aria" in category_counts:
             report.append("  ACCESSIBILITY:")
             report.append(f"    • Fix {category_counts['aria']} ARIA-related issues")
@@ -372,21 +437,14 @@ class AccessibilityAuditor:
             )
             report.append("    • Ensure information is not conveyed by color alone")
 
-        if total_issues == 0 and tools_run > 0:
-            report.append("  ✓ EXCELLENT:")
-            report.append("    • No accessibility issues found!")
-            report.append("    • Your codebase follows accessibility best practices")
-            report.append("    • Consider running periodic audits to maintain quality")
-
-        # Next steps
+    def _add_next_steps(self, report: list) -> None:
+        """Add next steps section to report."""
         report.append("")
         report.append("NEXT STEPS:")
         report.append("  1. Review detailed issue reports below")
         report.append("  2. Fix high-priority issues first (errors, then warnings)")
         report.append("  3. Run audit again to verify fixes")
         report.append("  4. Consider integrating audit into development workflow")
-
-        return "\n".join(report)
 
 
 class CustomAccessibilityChecker:

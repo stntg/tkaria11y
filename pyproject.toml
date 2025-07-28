@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tkaria11y"
-version = "0.0.1"
+version = "0.1.1"
 description = "ARIA-style, TTS-driven accessibility layer for the Tk ecosystem"
 readme = "README.md"
 license = { text = "MIT" }
@@ -17,23 +17,48 @@ classifiers = [
 ]
 
 dependencies = [
-  "pyttsx3",
-  "click",
+  "pyttsx3>=2.90",
+  "click>=8.0.0",
 ]
 
 [project.optional-dependencies]
+# Platform-specific accessibility dependencies
+windows = [
+  "comtypes>=1.1.0",  # Windows UI Automation
+]
+linux = [
+  "pyatspi>=2.38.0",  # Linux AT-SPI
+]
+macos = [
+  "pyobjc-framework-Cocoa>=8.0",  # macOS VoiceOver integration
+  "pyobjc-framework-ApplicationServices>=8.0",
+]
+
+# Enhanced accessibility features
+enhanced = [
+  "customtkinter>=5.0.0",  # CustomTkinter widget support
+  "Pillow>=9.0.0",  # Image processing for contrast analysis
+]
+
+# Complete accessibility suite
+full = [
+  "tkaria11y[windows,linux,macos,enhanced]",
+]
+
 dev = [
-  "pytest",
-  "libcst",
-  "mypy",
-  "flake8",
-  "black",
-  "mkdocs",
+  "pytest>=7.0.0",
+  "libcst>=0.4.0",
+  "mypy>=1.0.0",
+  "flake8>=5.0.0",
+  "black>=22.0.0",
+  "mkdocs>=1.4.0",
+  "pytest-cov>=4.0.0",  # Coverage testing
+  "pytest-mock>=3.10.0",  # Mocking for tests
 ]
 
 [project.scripts]
 tkaria11y-migrate = "tkaria11y.scripts.migrate:main"
-tkaria11y-stubgen = "tkaria11y.scripts.generate_stubs:main"
+tkaria11y-stubgen = "tkaria11y.scripts.stubgen:main"
 
 [tool.setuptools.packages.find]
 where = ["."]

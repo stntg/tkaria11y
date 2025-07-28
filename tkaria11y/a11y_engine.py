@@ -67,6 +67,16 @@ class TTSEngine:
                     if text is None:
                         return  # Shutdown signal
 
+                    # Parse priority from text
+                    priority = "medium"
+                    actual_text = text
+                    if ":" in text and text.split(":", 1)[0] in [
+                        "low",
+                        "medium",
+                        "high",
+                    ]:
+                        priority, actual_text = text.split(":", 1)
+
                     # Initialize engine if needed (on main thread)
                     if self._engine is None:
                         self._init_engine()
@@ -74,8 +84,22 @@ class TTSEngine:
                     # Only proceed if engine was successfully initialized
                     if self._engine is not None:
                         try:
-                            self._engine.say(text)
+                            # Adjust speech rate based on priority
+                            original_rate = self._rate
+                            if priority == "high":
+                                self._engine.setProperty(
+                                    "rate", min(self._rate + 50, 300)
+                                )
+                            elif priority == "low":
+                                self._engine.setProperty(
+                                    "rate", max(self._rate - 30, 100)
+                                )
+
+                            self._engine.say(actual_text)
                             self._engine.runAndWait()
+
+                            # Restore original rate
+                            self._engine.setProperty("rate", original_rate)
                         except (RuntimeError, OSError, AttributeError):
                             # Ignore TTS errors to prevent crashes
                             pass
@@ -102,10 +126,16 @@ class TTSEngine:
                 # No root window available, fall back to threading
                 pass
 
-    def speak(self, text: str) -> None:
-        """Add text to the TTS queue"""
-        if self._shutdown_requested:
+    def speak(
+        self, text: str, priority: str = "medium", interrupt: bool = False
+    ) -> None:
+        """Add text to the TTS queue with priority and interrupt options"""
+        if self._shutdown_requested or not text.strip():
             return
+
+        # Handle interrupt requests
+        if interrupt:
+            self.stop_current()
 
         with self._lock:
             if not self._started and not self._shutdown_requested:
@@ -120,7 +150,25 @@ class TTSEngine:
                     return
 
         if not self._shutdown_requested:
-            self._queue.put(text)
+            # Add priority information to the text
+            prioritized_text = f"{priority}:{text}"
+            self._queue.put(prioritized_text)
+
+    def stop_current(self) -> None:
+        """Stop current speech and clear queue"""
+        if self._engine:
+            try:
+                self._engine.stop()
+            except (RuntimeError, AttributeError):
+                pass
+
+        # Clear the queue
+        try:
+            while not self._queue.empty():
+                self._queue.get_nowait()
+                self._queue.task_done()
+        except (queue.Empty, AttributeError):
+            pass
 
     def stop(self) -> None:
         """Stop the TTS engine"""
@@ -210,9 +258,9 @@ class TTSEngine:
 tts = TTSEngine()
 
 
-def speak(text: str) -> None:
-    """Shortcut to tts.speak"""
-    tts.speak(text)
+def speak(text: str, priority: str = "medium", interrupt: bool = False) -> None:
+    """Shortcut to tts.speak with priority and interrupt options"""
+    tts.speak(text, priority, interrupt)
 
 
 def shutdown_tts() -> None:

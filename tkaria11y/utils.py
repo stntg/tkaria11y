@@ -21,6 +21,7 @@ def configure_focus_traversal(root: tk.Tk) -> None:
             def handler(event: tk.Event[Any]) -> str:
                 next_widget.focus_set()
                 return "break"
+
             return handler
 
         def make_shift_tab_handler(
@@ -29,6 +30,7 @@ def configure_focus_traversal(root: tk.Tk) -> None:
             def handler(event: tk.Event[Any]) -> str:
                 prev_widget.focus_set()
                 return "break"
+
             return handler
 
         w.bind("<Tab>", make_tab_handler(next_w))
