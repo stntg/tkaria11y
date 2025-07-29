@@ -23,7 +23,7 @@ jobs:
       contents: read
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12']
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -46,10 +46,9 @@ jobs:
         run: black --check .
 
       - name: Flake8 lint
-        run: flake8 tkaria11y tests --exit-zero
+        run: flake8 tkaria11y tests
 
       - name: MyPy type checking
-        continue-on-error: true
         run: mypy tkaria11y
 
   test:
@@ -60,7 +59,7 @@ jobs:
       contents: read
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12']
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -82,7 +81,6 @@ jobs:
         run: tkaria11y-stubgen --validate-package
 
       - name: Run pytest with virtual display
-        continue-on-error: true
         run: xvfb-run -a pytest --maxfail=1 --disable-warnings -q
 
   publish:
