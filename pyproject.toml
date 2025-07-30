@@ -12,11 +12,11 @@ authors = [{ name="Stan Griffiths", email="stantgriffiths@gmail.com" }]
 keywords = ["tkinter", "ttk", "accessibility", "a11y", "tts", "aria"]
 classifiers = [
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
 ]
@@ -71,3 +71,10 @@ include = ["tkaria11y*"]
 
 [tool.setuptools.package-data]
 tkaria11y = ["py.typed", "*.pyi", "stubs/*.pyi"]
+
+[tool.black]
+exclude = '''
+/(
+  generated_stubs
+)/
+'''

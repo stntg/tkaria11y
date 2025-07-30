@@ -4,12 +4,11 @@ name: CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [main, develop]
     tags:
       - 'v*.*.*'
   pull_request:
-    branches:
+    branches: 
       - main
 
 permissions:
@@ -24,7 +23,7 @@ jobs:
       contents: read
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11']
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -60,7 +59,7 @@ jobs:
       contents: read
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11']
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
