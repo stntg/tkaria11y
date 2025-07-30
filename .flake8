@@ -16,6 +16,7 @@ exclude =
     tests,
     examples,
     a11y_test_suite,
+    scripts,
 per-file-ignores =
     __init__.py:F401, F403, E501
     utils.py:F401
