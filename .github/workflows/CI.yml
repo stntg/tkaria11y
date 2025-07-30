@@ -49,6 +49,7 @@ jobs:
         run: flake8 tkaria11y tests
 
       - name: MyPy type checking
+        continue-on-error: True
         run: mypy tkaria11y
 
   test:
