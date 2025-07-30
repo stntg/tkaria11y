@@ -543,12 +543,8 @@ def enhance_existing_widgets(root: tk.Widget) -> None:
 # Import CustomTkinter accessible widgets from dedicated module
 try:
     # Import enhanced CTK widgets (wrappers with better functionality)
-    from .ctk_wrappers import (
-        AccessibleCTKButton,
-        AccessibleCTKEntry,
-        CTK_AVAILABLE
-    )
-    
+    from .ctk_wrappers import AccessibleCTKButton, AccessibleCTKEntry, CTK_AVAILABLE
+
     # Import remaining CTK widgets from old system
     from .ctk_widgets import (
         AccessibleCTKFrame,
@@ -559,20 +555,22 @@ try:
         AccessibleCTKTabview,
         AccessibleCTKScrollableFrame,
     )
-    
+
     # Add CTK widgets to __all__
     if CTK_AVAILABLE:
-        __all__.extend([
-            "AccessibleCTKFrame",
-            "AccessibleCTKButton", 
-            "AccessibleCTKEntry",
-            "AccessibleCTKLabel",
-            "AccessibleCTKCheckBox",
-            "AccessibleCTKRadioButton",
-            "AccessibleCTKSlider",
-            "AccessibleCTKTabview",
-            "AccessibleCTKScrollableFrame"
-        ])
+        __all__.extend(
+            [
+                "AccessibleCTKFrame",
+                "AccessibleCTKButton",
+                "AccessibleCTKEntry",
+                "AccessibleCTKLabel",
+                "AccessibleCTKCheckBox",
+                "AccessibleCTKRadioButton",
+                "AccessibleCTKSlider",
+                "AccessibleCTKTabview",
+                "AccessibleCTKScrollableFrame",
+            ]
+        )
 
 except ImportError:
     # CTK widgets not available

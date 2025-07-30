@@ -263,7 +263,9 @@ class HighContrastTheme:
                 try:
                     cls._apply_to_children(root)
                     # Schedule next check
-                    root.after(1000, auto_theme_new_widgets)  # Check every 1000ms (1 second)
+                    root.after(
+                        1000, auto_theme_new_widgets
+                    )  # Check every 1000ms (1 second)
                 except tk.TclError:
                     # Root was destroyed
                     pass
@@ -276,10 +278,10 @@ class HighContrastTheme:
         """Apply theme to a single widget with comprehensive coverage"""
         try:
             widget_class = widget.winfo_class()
-            
+
             # Skip CustomTkinter widgets - they have their own theming system
-            widget_module = getattr(widget.__class__, '__module__', '')
-            if 'customtkinter' in widget_module or widget_class.startswith('CTk'):
+            widget_module = getattr(widget.__class__, "__module__", "")
+            if "customtkinter" in widget_module or widget_class.startswith("CTk"):
                 return
 
             # Get all configurable options for this widget

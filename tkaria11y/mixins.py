@@ -149,7 +149,7 @@ class AccessibleMixin:
             focus_events_bound = True
         except (NotImplementedError, AttributeError):
             pass
-        
+
         # Try to bind other events
         try:
             # Mouse events
@@ -164,7 +164,7 @@ class AccessibleMixin:
         except (NotImplementedError, AttributeError):
             # CustomTkinter widgets don't support traditional event binding
             pass
-        
+
         # If focus events couldn't be bound, log it for debugging
         if not focus_events_bound:
             print(f"Warning: Could not bind focus events for {self.__class__.__name__}")
@@ -282,7 +282,7 @@ class AccessibleMixin:
 
             root = self.winfo_toplevel()  # type: ignore
             focus_manager = get_focus_manager(root)
-            
+
             # Only register if this is a focusable widget
             if focus_manager._is_focusable_widget(self):  # type: ignore
                 focus_manager.register_widget(self)  # type: ignore

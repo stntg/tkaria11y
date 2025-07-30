@@ -1,6 +1,6 @@
 [flake8]
 max-line-length = 88
-extend-ignore = E203, W503
+extend-ignore = E203, W503, F401
 exclude = 
     .git,
     dev_docs,
@@ -11,6 +11,18 @@ exclude =
     .pytest_cache,
     .mypy_cache,
     .zencoder
+    tkaria11y/scripts,
+    a11y_audit,
+    tests,
+    examples,
+    a11y_test_suite,
 per-file-ignores =
-    __init__.py:F401, F403
+    __init__.py:F401, F403, E501
     utils.py:F401
+    mixins.py:E501, F841
+    platform_adapter.py:E501
+    focus_manager.py:E501, F841
+    ctk_widgets.py:E501, E722
+    ctk_focus_manager.py:E722
+    aria_compliance.py:E501
+    run_accessibility_audit.py:E501

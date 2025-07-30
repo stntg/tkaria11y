@@ -50,48 +50,49 @@ class FocusIndicator:
     def show_focus(self, widget: tk.Misc) -> None:
         """Show focus indicator around widget"""
         self._current_widget = widget
-        
+
         try:
             # Get widget position and size
             x = widget.winfo_x()
             y = widget.winfo_y()
             width = widget.winfo_width()
             height = widget.winfo_height()
-            
+
             # Convert to root coordinates
             root_x = widget.winfo_rootx() - self.root.winfo_rootx()
             root_y = widget.winfo_rooty() - self.root.winfo_rooty()
-            
+
             # Clear previous indicator
             if self._indicator_canvas:
                 self._indicator_canvas.delete("focus_indicator")
-            
+
             # Create canvas overlay for focus indicator
             if not self._indicator_canvas:
                 self._create_indicator()
-            
+
             # Position and size the canvas
             self._indicator_canvas.place(
                 x=root_x - self._indicator_width,
                 y=root_y - self._indicator_width,
                 width=width + 2 * self._indicator_width,
-                height=height + 2 * self._indicator_width
+                height=height + 2 * self._indicator_width,
             )
-            
+
             # Draw focus rectangle
             self._indicator_canvas.create_rectangle(
-                0, 0,
+                0,
+                0,
                 width + 2 * self._indicator_width,
                 height + 2 * self._indicator_width,
                 outline=self._indicator_color,
                 width=self._indicator_width,
                 fill="",
-                tags="focus_indicator"
+                tags="focus_indicator",
             )
-            
+
             # Ensure indicator is on top but doesn't block events
             self._indicator_canvas.tkraise()
-            
+
         except tk.TclError:
             # Widget may have been destroyed or not ready
             pass
@@ -140,11 +141,12 @@ class FocusManager:
 
         # Track widget destruction
         self._widget_refs: weakref.WeakSet = weakref.WeakSet()
-        
+
         # Initialize CTK focus manager if available
         self._ctk_focus_manager = None
         try:
             from .ctk_focus_manager import get_ctk_focus_manager
+
             self._ctk_focus_manager = get_ctk_focus_manager(root)
         except ImportError:
             pass
@@ -189,7 +191,7 @@ class FocusManager:
 
         # Check if this is a CustomTkinter widget
         is_ctk_widget = self._is_ctk_widget(widget)
-        
+
         if widget not in self._focus_order:
             self._focus_order.append(widget)
             self._widget_refs.add(widget)
@@ -228,67 +230,118 @@ class FocusManager:
         # Remove from history
         while widget in self._focus_history:
             self._focus_history.remove(widget)
-    
+
     def _is_ctk_widget(self, widget: tk.Misc) -> bool:
         """Check if widget is a CustomTkinter widget"""
-        widget_module = getattr(widget.__class__, '__module__', '')
+        widget_module = getattr(widget.__class__, "__module__", "")
         widget_class = widget.__class__.__name__
-        return 'customtkinter' in widget_module or widget_class.startswith('CTk') or 'AccessibleCTK' in widget_class
-    
+        return (
+            "customtkinter" in widget_module
+            or widget_class.startswith("CTk")
+            or "AccessibleCTK" in widget_class
+        )
+
     def _is_focusable_widget(self, widget: tk.Misc) -> bool:
         """Check if widget can receive focus (interactive widgets only)"""
         widget_class = widget.__class__.__name__
-        
+
         # Interactive widget types that should receive focus
         focusable_types = {
             # Tkinter widgets
-            'Button', 'Entry', 'Text', 'Listbox', 'Scale', 'Spinbox', 'Checkbutton', 'Radiobutton',
-            # TTK widgets  
-            'TtkButton', 'TtkEntry', 'TtkCombobox', 'TtkScale', 'TtkSpinbox', 'TtkCheckbutton', 'TtkRadiobutton',
+            "Button",
+            "Entry",
+            "Text",
+            "Listbox",
+            "Scale",
+            "Spinbox",
+            "Checkbutton",
+            "Radiobutton",
+            # TTK widgets
+            "TtkButton",
+            "TtkEntry",
+            "TtkCombobox",
+            "TtkScale",
+            "TtkSpinbox",
+            "TtkCheckbutton",
+            "TtkRadiobutton",
             # Accessible widgets
-            'AccessibleButton', 'AccessibleEntry', 'AccessibleText', 'AccessibleListbox', 'AccessibleScale',
-            'AccessibleSpinbox', 'AccessibleCheckbutton', 'AccessibleRadiobutton',
-            'AccessibleTTKButton', 'AccessibleTTKEntry', 'AccessibleTTKCombobox', 'AccessibleTTKScale',
-            'AccessibleTTKSpinbox', 'AccessibleTTKCheckbutton', 'AccessibleTTKRadiobutton',
+            "AccessibleButton",
+            "AccessibleEntry",
+            "AccessibleText",
+            "AccessibleListbox",
+            "AccessibleScale",
+            "AccessibleSpinbox",
+            "AccessibleCheckbutton",
+            "AccessibleRadiobutton",
+            "AccessibleTTKButton",
+            "AccessibleTTKEntry",
+            "AccessibleTTKCombobox",
+            "AccessibleTTKScale",
+            "AccessibleTTKSpinbox",
+            "AccessibleTTKCheckbutton",
+            "AccessibleTTKRadiobutton",
             # CustomTkinter widgets
-            'CTkButton', 'CTkEntry', 'CTkCheckBox', 'CTkRadioButton', 'CTkSlider', 'CTkComboBox',
-            'AccessibleCTKButton', 'AccessibleCTKEntry', 'AccessibleCTKCheckBox', 'AccessibleCTKRadioButton', 
-            'AccessibleCTKSlider', 'AccessibleCTKComboBox'
+            "CTkButton",
+            "CTkEntry",
+            "CTkCheckBox",
+            "CTkRadioButton",
+            "CTkSlider",
+            "CTkComboBox",
+            "AccessibleCTKButton",
+            "AccessibleCTKEntry",
+            "AccessibleCTKCheckBox",
+            "AccessibleCTKRadioButton",
+            "AccessibleCTKSlider",
+            "AccessibleCTKComboBox",
         }
-        
+
         # Check if widget type is focusable
         if widget_class in focusable_types:
             return True
-            
+
         # Check if widget can actually take focus (skip for CTK widgets)
         if not self._is_ctk_widget(widget):
             try:
                 # Try to check if widget has takefocus option
-                takefocus = widget.cget('takefocus')
-                if takefocus == 1 or takefocus == '1' or takefocus is True:
+                takefocus = widget.cget("takefocus")
+                if takefocus == 1 or takefocus == "1" or takefocus is True:
                     return True
-                elif takefocus == 0 or takefocus == '0' or takefocus is False:
+                elif takefocus == 0 or takefocus == "0" or takefocus is False:
                     return False
             except (tk.TclError, AttributeError, ValueError):
                 pass
-        
+
         # For CustomTkinter widgets, check if they have focus methods
-        if hasattr(widget, 'focus_set') and hasattr(widget, 'focus_get'):
+        if hasattr(widget, "focus_set") and hasattr(widget, "focus_get"):
             # Additional check for CTK widgets - they should be interactive
-            if any(keyword in widget_class.lower() for keyword in ['button', 'entry', 'checkbox', 'radio', 'slider', 'combo']):
+            if any(
+                keyword in widget_class.lower()
+                for keyword in [
+                    "button",
+                    "entry",
+                    "checkbox",
+                    "radio",
+                    "slider",
+                    "combo",
+                ]
+            ):
                 return True
-        
+
         return False
 
     def _setup_widget_bindings(self, widget: tk.Misc) -> None:
         """Setup widget-specific focus bindings"""
         try:
             # Bind focus events to show/hide indicator
-            widget.bind("<FocusIn>", lambda e: self._show_focus_indicator(widget), add="+")
+            widget.bind(
+                "<FocusIn>", lambda e: self._show_focus_indicator(widget), add="+"
+            )
             widget.bind("<FocusOut>", lambda e: self._hide_focus_indicator(), add="+")
 
             # Bind configuration changes to update indicator
-            widget.bind("<Configure>", lambda e: self._update_focus_indicator(), add="+")
+            widget.bind(
+                "<Configure>", lambda e: self._update_focus_indicator(), add="+"
+            )
         except (NotImplementedError, AttributeError, tk.TclError):
             # Widget doesn't support binding (e.g., CustomTkinter widgets)
             # For these widgets, we'll rely on manual focus tracking
@@ -439,7 +492,7 @@ class FocusManager:
                         self._focus_ctk_widget(widget)
                     else:
                         widget.focus_set()
-                    
+
                     self._add_to_history(widget)
                     return True
                 except tk.TclError:
@@ -464,43 +517,43 @@ class FocusManager:
             attempts += 1
 
         return False
-    
+
     def _focus_ctk_widget(self, widget: tk.Misc) -> None:
         """Focus a CustomTkinter widget properly"""
         try:
             # For CTK widgets, focus the appropriate internal widget
             widget_class = widget.__class__.__name__
-            
-            if 'Button' in widget_class:
+
+            if "Button" in widget_class:
                 # For CTK buttons, focus the text label or canvas
-                if hasattr(widget, '_text_label'):
+                if hasattr(widget, "_text_label"):
                     widget._text_label.focus_set()
-                elif hasattr(widget, '_canvas'):
+                elif hasattr(widget, "_canvas"):
                     widget._canvas.focus_set()
                 else:
                     widget.focus_set()
-            
-            elif 'Entry' in widget_class:
+
+            elif "Entry" in widget_class:
                 # For CTK entries, focus the internal entry widget
-                if hasattr(widget, '_entry'):
+                if hasattr(widget, "_entry"):
                     widget._entry.focus_set()
                 else:
                     widget.focus_set()
-            
+
             else:
                 # For other CTK widgets, try canvas first, then standard focus
-                if hasattr(widget, '_canvas'):
+                if hasattr(widget, "_canvas"):
                     widget._canvas.focus_set()
                 else:
                     widget.focus_set()
-            
+
         except (AttributeError, tk.TclError):
             # Fallback to standard focus
             try:
                 widget.focus_set()
             except tk.TclError:
                 pass
-    
+
     def _find_parent_ctk_widget(self, widget: tk.Misc) -> Optional[tk.Misc]:
         """Find the parent CTK widget if this is an internal widget"""
         try:
@@ -509,14 +562,19 @@ class FocusManager:
             while parent:
                 if parent in self._focus_order and self._is_ctk_widget(parent):
                     # Check if this widget is an internal component
-                    if (hasattr(parent, '_canvas') and widget == parent._canvas) or \
-                       (hasattr(parent, '_text_label') and widget == parent._text_label) or \
-                       (hasattr(parent, '_entry') and widget == parent._entry):
+                    if (
+                        (hasattr(parent, "_canvas") and widget == parent._canvas)
+                        or (
+                            hasattr(parent, "_text_label")
+                            and widget == parent._text_label
+                        )
+                        or (hasattr(parent, "_entry") and widget == parent._entry)
+                    ):
                         return parent
-                
+
                 # Move up the widget hierarchy
                 parent = parent.master
-            
+
             return None
         except (AttributeError, tk.TclError):
             return None
@@ -539,7 +597,7 @@ class FocusManager:
             # Check takefocus setting (only for non-CTK widgets)
             try:
                 takefocus = widget.cget("takefocus")
-                if takefocus == 0 or takefocus == '0' or takefocus is False:
+                if takefocus == 0 or takefocus == "0" or takefocus is False:
                     return False
             except (tk.TclError, ValueError):
                 pass
