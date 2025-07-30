@@ -4,7 +4,6 @@
 Configuration for accessibility audit tools.
 """
 
-import os
 from pathlib import Path
 
 # Audit configuration

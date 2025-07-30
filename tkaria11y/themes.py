@@ -7,7 +7,7 @@ Theme utilities for accessibility:
 """
 
 import tkinter as tk
-from typing import Dict, List, Optional, Any, Tuple
+from typing import Dict, List, Optional, Any
 import weakref
 
 
@@ -263,24 +263,33 @@ class HighContrastTheme:
                 try:
                     cls._apply_to_children(root)
                     # Schedule next check
-                    root.after(100, auto_theme_new_widgets)  # Check every 100ms
+                    root.after(1000, auto_theme_new_widgets)  # Check every 1000ms (1 second)
                 except tk.TclError:
                     # Root was destroyed
                     pass
 
         # Start the auto-theming loop
-        root.after(100, auto_theme_new_widgets)
+        root.after(1000, auto_theme_new_widgets)
 
     @classmethod
     def _apply_to_widget(cls, widget: tk.Misc) -> None:
         """Apply theme to a single widget with comprehensive coverage"""
         try:
             widget_class = widget.winfo_class()
+            
+            # Skip CustomTkinter widgets - they have their own theming system
+            widget_module = getattr(widget.__class__, '__module__', '')
+            if 'customtkinter' in widget_module or widget_class.startswith('CTk'):
+                return
 
             # Get all configurable options for this widget
             try:
                 config_options = widget.configure()
             except tk.TclError:
+                return
+
+            # Check if config_options is valid
+            if config_options is None:
                 return
 
             # Apply colors in groups
@@ -303,6 +312,8 @@ class HighContrastTheme:
     @classmethod
     def _apply_basic_colors(cls, widget: tk.Misc, config_options: dict) -> None:
         """Apply basic background and foreground colors"""
+        if config_options is None:
+            return
         if "background" in config_options or "bg" in config_options:
             try:
                 widget.configure(bg=cls.COLORS["bg"])  # type: ignore[call-arg]
@@ -318,6 +329,8 @@ class HighContrastTheme:
     @classmethod
     def _apply_selection_colors(cls, widget: tk.Misc, config_options: dict) -> None:
         """Apply selection colors"""
+        if config_options is None:
+            return
         if "selectbackground" in config_options:
             try:
                 widget.configure(
@@ -337,6 +350,8 @@ class HighContrastTheme:
     @classmethod
     def _apply_active_colors(cls, widget: tk.Misc, config_options: dict) -> None:
         """Apply active colors"""
+        if config_options is None:
+            return
         if "activebackground" in config_options:
             try:
                 widget.configure(
@@ -356,6 +371,8 @@ class HighContrastTheme:
     @classmethod
     def _apply_special_colors(cls, widget: tk.Misc, config_options: dict) -> None:
         """Apply special colors like insert and disabled"""
+        if config_options is None:
+            return
         if "insertbackground" in config_options:
             try:
                 widget.configure(
@@ -385,6 +402,8 @@ class HighContrastTheme:
         cls, widget: tk.Misc, widget_class: str, config_options: dict
     ) -> None:
         """Apply widget-specific colors"""
+        if config_options is None:
+            return
         if widget_class == "Entry":
             cls._apply_entry_colors(widget, config_options)
         elif widget_class == "Scale":
@@ -399,6 +418,8 @@ class HighContrastTheme:
     @classmethod
     def _apply_entry_colors(cls, widget: tk.Misc, config_options: dict) -> None:
         """Apply Entry-specific colors"""
+        if config_options is None:
+            return
         if "fieldbackground" in config_options:
             try:
                 widget.configure(
@@ -410,6 +431,8 @@ class HighContrastTheme:
     @classmethod
     def _apply_scale_colors(cls, widget: tk.Misc, config_options: dict) -> None:
         """Apply Scale-specific colors"""
+        if config_options is None:
+            return
         if "troughcolor" in config_options:
             try:
                 widget.configure(
@@ -421,6 +444,8 @@ class HighContrastTheme:
     @classmethod
     def _apply_button_colors(cls, widget: tk.Misc, config_options: dict) -> None:
         """Apply Checkbutton/Radiobutton-specific colors"""
+        if config_options is None:
+            return
         if "selectcolor" in config_options:
             try:
                 widget.configure(
@@ -432,6 +457,8 @@ class HighContrastTheme:
     @classmethod
     def _apply_scrollbar_colors(cls, widget: tk.Misc, config_options: dict) -> None:
         """Apply Scrollbar-specific colors"""
+        if config_options is None:
+            return
         if "troughcolor" in config_options:
             try:
                 widget.configure(
@@ -443,6 +470,8 @@ class HighContrastTheme:
     @classmethod
     def _apply_menu_colors(cls, widget: tk.Misc, config_options: dict) -> None:
         """Apply Menu-specific colors"""
+        if config_options is None:
+            return
         if "activebackground" in config_options:
             try:
                 widget.configure(

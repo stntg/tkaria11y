@@ -13,7 +13,7 @@ import subprocess
 import shutil
 import json
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 
 from .config import SOURCE_DIRS, EXCLUDE_PATTERNS, AUDIT_CONFIG, get_config_path
 

@@ -7,17 +7,13 @@ keyboard navigation, and screen reader compatibility.
 """
 
 import tkinter as tk
-from typing import List, Dict, Any, Optional, Tuple, Set
+from typing import List, Dict, Any, Optional, Set
 import time
-import threading
 from dataclasses import dataclass
 from enum import Enum
 from .aria_compliance import (
     ARIARole,
-    ARIAProperty,
-    validate_aria_compliance,
     calculate_contrast_ratio,
-    validate_contrast_ratio,
     validate_keyboard_navigation,
 )
 from .platform_adapter import is_screen_reader_active
@@ -85,6 +81,12 @@ class AccessibilityValidator:
         self._validate_understandable(root)
         self._validate_robust(root)
 
+        # Additional comprehensive validations
+        self._validate_widget_hierarchy(root)
+        self._validate_error_handling(root)
+        self._validate_responsive_design(root)
+        self._validate_internationalization(root)
+
         return self.issues.copy()
 
     def _validate_perceivable(self, root: tk.Tk) -> None:
@@ -93,6 +95,7 @@ class AccessibilityValidator:
         self._validate_color_contrast(root)
         self._validate_text_sizing(root)
         self._validate_audio_content(root)
+        self._validate_color_usage(root)
 
     def _validate_operable(self, root: tk.Tk) -> None:
         """Validate Operable principle (WCAG 2.x)"""
@@ -100,6 +103,7 @@ class AccessibilityValidator:
         self._validate_focus_management(root)
         self._validate_timing_requirements(root)
         self._validate_seizure_safety(root)
+        self._validate_form_structure(root)
 
     def _validate_understandable(self, root: tk.Tk) -> None:
         """Validate Understandable principle (WCAG 3.x)"""
@@ -159,11 +163,13 @@ class AccessibilityValidator:
                             severity=severity,
                             category=ValidationCategory.PERCEIVABLE,
                             title="Missing text alternative",
-                            description=f"{widget_class} widget lacks accessible name or text",
+                            description=f"{widget_class} widget lacks accessible name "
+                            f"or text",
                             widget=widget,
                             widget_class=widget_class,
                             widget_path=current_path,
-                            recommendation="Add accessible_name parameter or text attribute",
+                            recommendation="Add accessible_name parameter or text "
+                            "attribute",
                             wcag_criterion="1.1.1 Non-text Content",
                             auto_fixable=False,
                         )
@@ -215,11 +221,13 @@ class AccessibilityValidator:
                                 severity=severity,
                                 category=ValidationCategory.PERCEIVABLE,
                                 title="Insufficient color contrast",
-                                description=f"Contrast ratio {contrast_ratio:.2f} is below required {required_ratio}",
+                                description=f"Contrast ratio {contrast_ratio:.2f} is "
+                                f"below required {required_ratio}",
                                 widget=widget,
                                 widget_class=widget_class,
                                 widget_path=current_path,
-                                recommendation=f"Adjust colors to achieve {required_ratio}:1 contrast ratio",
+                                recommendation=f"Adjust colors to achieve "
+                                f"{required_ratio}:1 contrast ratio",
                                 wcag_criterion=criterion,
                                 auto_fixable=True,
                             )
@@ -255,7 +263,8 @@ class AccessibilityValidator:
                                     severity=IssueSeverity.MEDIUM,
                                     category=ValidationCategory.PERCEIVABLE,
                                     title="Font size too small",
-                                    description=f"Font size {size}pt is below recommended minimum of 12pt",
+                                    description=f"Font size {size}pt is below "
+                                    f"recommended minimum of 12pt",
                                     widget=widget,
                                     widget_class=widget_class,
                                     widget_path=current_path,
@@ -278,9 +287,116 @@ class AccessibilityValidator:
 
     def _validate_audio_content(self, root: tk.Tk) -> None:
         """Validate audio content accessibility (WCAG 1.2.x)"""
-        # Placeholder for audio content validation
-        # Would check for captions, transcripts, etc.
-        pass
+
+        def check_widget(widget: tk.Misc, path: str = "") -> None:
+            widget_class = widget.winfo_class()
+            current_path = f"{path}/{widget_class}" if path else widget_class
+
+            # Check for audio-related widgets or attributes
+            if hasattr(widget, "audio_manager") or hasattr(widget, "tts_enabled"):
+                # Check if audio has text alternatives
+                if not (
+                    hasattr(widget, "accessible_description")
+                    and widget.accessible_description
+                ):
+                    self.issues.append(
+                        AccessibilityIssue(
+                            severity=IssueSeverity.HIGH,
+                            category=ValidationCategory.PERCEIVABLE,
+                            title="Audio content lacks text alternative",
+                            description=f"{widget_class} with audio lacks description",
+                            widget=widget,
+                            widget_class=widget_class,
+                            widget_path=current_path,
+                            recommendation="Provide text description for audio "
+                            "content",
+                            wcag_criterion="1.2.1 Audio-only and Video-only",
+                            auto_fixable=False,
+                        )
+                    )
+
+            # Check for Canvas widgets that might contain multimedia
+            if widget_class == "Canvas":
+                self.issues.append(
+                    AccessibilityIssue(
+                        severity=IssueSeverity.INFO,
+                        category=ValidationCategory.PERCEIVABLE,
+                        title="Canvas may contain multimedia content",
+                        description="Canvas widgets should be checked for audio/video",
+                        widget=widget,
+                        widget_class=widget_class,
+                        widget_path=current_path,
+                        recommendation="Ensure any multimedia has text alternatives",
+                        wcag_criterion="1.2.1 Audio-only and Video-only",
+                        auto_fixable=False,
+                    )
+                )
+
+            # Check children
+            try:
+                for child in widget.winfo_children():
+                    check_widget(child, current_path)
+            except tk.TclError:
+                pass
+
+        check_widget(root)
+
+    def _validate_color_usage(self, root: tk.Tk) -> None:
+        """Validate that color is not the only means of conveying information"""
+
+        def check_widget(widget: tk.Misc, path: str = "") -> None:
+            widget_class = widget.winfo_class()
+            current_path = f"{path}/{widget_class}" if path else widget_class
+
+            # Check for widgets that might rely solely on color
+            if widget_class in ["Button", "Label"]:
+                try:
+                    bg_color = widget.cget("bg") or widget.cget("background")
+                    text = widget.cget("text")
+
+                    # Check for color-coded buttons without text
+                    if bg_color and bg_color.lower() in [
+                        "red",
+                        "#ff0000",
+                        "#f00",
+                        "green",
+                        "#00ff00",
+                        "#0f0",
+                        "yellow",
+                        "#ffff00",
+                        "#ff0",
+                        "blue",
+                        "#0000ff",
+                        "#00f",
+                    ]:
+                        if not text or len(text.strip()) < 2:
+                            self.issues.append(
+                                AccessibilityIssue(
+                                    severity=IssueSeverity.HIGH,
+                                    category=ValidationCategory.PERCEIVABLE,
+                                    title="Color used as only means of information",
+                                    description=f"{widget_class} relies on color "
+                                    f"without text alternative",
+                                    widget=widget,
+                                    widget_class=widget_class,
+                                    widget_path=current_path,
+                                    recommendation="Add text labels or icons to "
+                                    "supplement color coding",
+                                    wcag_criterion="1.4.1 Use of Color",
+                                    auto_fixable=False,
+                                )
+                            )
+                except tk.TclError:
+                    pass
+
+            # Check children
+            try:
+                for child in widget.winfo_children():
+                    check_widget(child, current_path)
+            except tk.TclError:
+                pass
+
+        check_widget(root)
 
     # Operable validations
     def _validate_keyboard_accessibility(self, root: tk.Tk) -> None:
@@ -312,11 +428,13 @@ class AccessibilityValidator:
                                 severity=IssueSeverity.HIGH,
                                 category=ValidationCategory.OPERABLE,
                                 title="Interactive widget not keyboard accessible",
-                                description=f"{widget_class} cannot receive keyboard focus",
+                                description=f"{widget_class} cannot receive "
+                                f"keyboard focus",
                                 widget=widget,
                                 widget_class=widget_class,
                                 widget_path=current_path,
-                                recommendation="Set takefocus=True or remove takefocus=0",
+                                recommendation="Set takefocus=True or remove "
+                                "takefocus=0",
                                 wcag_criterion="2.1.1 Keyboard",
                                 auto_fixable=True,
                             )
@@ -406,15 +524,184 @@ class AccessibilityValidator:
 
     def _validate_timing_requirements(self, root: tk.Tk) -> None:
         """Validate timing requirements (WCAG 2.2.1, 2.2.2)"""
-        # Check for time limits and auto-refresh
-        # This would need to be implemented based on specific application behavior
-        pass
+
+        # Check for widgets with after() calls that might create time limits
+        def check_widget(widget: tk.Misc, path: str = "") -> None:
+            widget_class = widget.winfo_class()
+            current_path = f"{path}/{widget_class}" if path else widget_class
+
+            # Check if widget has timing-related attributes or methods
+            if hasattr(widget, "_after_ids") or hasattr(widget, "after_idle"):
+                # This is a basic check - in practice, you'd need to analyze
+                # the actual timing behavior
+                self.issues.append(
+                    AccessibilityIssue(
+                        severity=IssueSeverity.INFO,
+                        category=ValidationCategory.OPERABLE,
+                        title="Widget may have timing constraints",
+                        description=f"{widget_class} may implement timing behavior",
+                        widget=widget,
+                        widget_class=widget_class,
+                        widget_path=current_path,
+                        recommendation="Ensure timing can be extended or disabled",
+                        wcag_criterion="2.2.1 Timing Adjustable",
+                        auto_fixable=False,
+                    )
+                )
+
+            # Check children
+            try:
+                for child in widget.winfo_children():
+                    check_widget(child, current_path)
+            except tk.TclError:
+                pass
+
+        check_widget(root)
 
     def _validate_seizure_safety(self, root: tk.Tk) -> None:
         """Validate seizure and vestibular disorder safety (WCAG 2.3.1)"""
-        # Check for flashing content
-        # This would need specialized analysis of animations and effects
-        pass
+
+        # Check for potentially problematic visual effects
+        def check_widget(widget: tk.Misc, path: str = "") -> None:
+            widget_class = widget.winfo_class()
+            current_path = f"{path}/{widget_class}" if path else widget_class
+
+            # Check for Canvas widgets that might contain animations
+            if widget_class == "Canvas":
+                self.issues.append(
+                    AccessibilityIssue(
+                        severity=IssueSeverity.INFO,
+                        category=ValidationCategory.OPERABLE,
+                        title="Canvas may contain flashing content",
+                        description="Canvas widgets should be checked for flashing "
+                        "or rapidly changing content",
+                        widget=widget,
+                        widget_class=widget_class,
+                        widget_path=current_path,
+                        recommendation="Ensure no content flashes more than 3 times "
+                        "per second",
+                        wcag_criterion="2.3.1 Three Flashes or Below Threshold",
+                        auto_fixable=False,
+                    )
+                )
+
+            # Check for widgets with background color changes
+            try:
+                bg_color = widget.cget("bg") or widget.cget("background")
+                if bg_color and bg_color.lower() in ["red", "#ff0000", "#f00"]:
+                    self.issues.append(
+                        AccessibilityIssue(
+                            severity=IssueSeverity.LOW,
+                            category=ValidationCategory.OPERABLE,
+                            title="Bright red background may be problematic",
+                            description="Bright red backgrounds can be problematic "
+                            "for some users",
+                            widget=widget,
+                            widget_class=widget_class,
+                            widget_path=current_path,
+                            recommendation="Consider using less intense colors",
+                            wcag_criterion="2.3.1 Three Flashes or Below Threshold",
+                            auto_fixable=True,
+                        )
+                    )
+            except tk.TclError:
+                pass
+
+            # Check children
+            try:
+                for child in widget.winfo_children():
+                    check_widget(child, current_path)
+            except tk.TclError:
+                pass
+
+        check_widget(root)
+
+    def _validate_form_structure(self, root: tk.Tk) -> None:
+        """Validate form structure and grouping (WCAG 2.4.6, 3.3.2)"""
+        form_widgets = []
+
+        def collect_form_widgets(widget: tk.Misc, path: str = "") -> None:
+            widget_class = widget.winfo_class()
+            current_path = f"{path}/{widget_class}" if path else widget_class
+
+            if widget_class in [
+                "Entry",
+                "Text",
+                "Spinbox",
+                "Checkbutton",
+                "Radiobutton",
+                "Scale",
+                "Listbox",
+            ]:
+                form_widgets.append((widget, widget_class, current_path))
+
+            # Check children
+            try:
+                for child in widget.winfo_children():
+                    collect_form_widgets(child, current_path)
+            except tk.TclError:
+                pass
+
+        collect_form_widgets(root)
+
+        # Validate each form widget
+        for widget, widget_class, path in form_widgets:
+            # Check for proper labeling
+            has_label = hasattr(widget, "accessible_name") and widget.accessible_name
+
+            if not has_label:
+                # Look for nearby Label widgets
+                nearby_label = self._find_nearby_label(widget)
+                if not nearby_label:
+                    self.issues.append(
+                        AccessibilityIssue(
+                            severity=IssueSeverity.HIGH,
+                            category=ValidationCategory.OPERABLE,
+                            title="Form control lacks proper label",
+                            description=f"{widget_class} has no associated label",
+                            widget=widget,
+                            widget_class=widget_class,
+                            widget_path=path,
+                            recommendation="Add accessible_name or associate "
+                            "with Label widget",
+                            wcag_criterion="2.4.6 Headings and Labels",
+                            auto_fixable=False,
+                        )
+                    )
+
+            # Check for required field indicators
+            if widget_class in ["Entry", "Text", "Spinbox"]:
+                # This is a basic check - in practice, you'd check for
+                # visual indicators or validation rules
+                if not hasattr(widget, "required") or not widget.required:
+                    self.issues.append(
+                        AccessibilityIssue(
+                            severity=IssueSeverity.INFO,
+                            category=ValidationCategory.OPERABLE,
+                            title="Form field may need required indicator",
+                            description=f"{widget_class} should indicate if required",
+                            widget=widget,
+                            widget_class=widget_class,
+                            widget_path=path,
+                            recommendation="Add visual and programmatic "
+                            "required indicators",
+                            wcag_criterion="3.3.2 Labels or Instructions",
+                            auto_fixable=False,
+                        )
+                    )
+
+    def _find_nearby_label(self, widget: tk.Misc) -> bool:
+        """Find if there's a Label widget near the given widget"""
+        try:
+            parent = widget.winfo_parent()
+            if parent:
+                parent_widget = widget.nametowidget(parent)
+                for sibling in parent_widget.winfo_children():
+                    if sibling.winfo_class() == "Label":
+                        return True
+        except tk.TclError:
+            pass
+        return False
 
     # Understandable validations
     def _validate_readable_content(self, root: tk.Tk) -> None:
@@ -437,11 +724,13 @@ class AccessibilityValidator:
                                 severity=IssueSeverity.LOW,
                                 category=ValidationCategory.UNDERSTANDABLE,
                                 title="Potentially difficult to read font",
-                                description=f"Font family '{font[0]}' may be difficult to read",
+                                description=f"Font family '{font[0]}' may be "
+                                f"difficult to read",
                                 widget=widget,
                                 widget_class=widget_class,
                                 widget_path=current_path,
-                                recommendation="Use sans-serif fonts for better readability",
+                                recommendation="Use sans-serif fonts for better "
+                                "readability",
                                 wcag_criterion="3.1.5 Reading Level",
                                 auto_fixable=True,
                             )
@@ -461,8 +750,81 @@ class AccessibilityValidator:
     def _validate_predictable_functionality(self, root: tk.Tk) -> None:
         """Validate predictable functionality (WCAG 3.2.x)"""
         # Check for consistent navigation and identification
-        # This would analyze UI patterns across the application
-        pass
+        button_texts = []
+        button_positions = []
+
+        def check_widget(widget: tk.Misc, path: str = "") -> None:
+            widget_class = widget.winfo_class()
+            current_path = f"{path}/{widget_class}" if path else widget_class
+
+            # Collect button information for consistency checking
+            if widget_class == "Button":
+                try:
+                    text = widget.cget("text")
+                    if text:
+                        button_texts.append(text.lower())
+                        try:
+                            x, y = widget.winfo_x(), widget.winfo_y()
+                            button_positions.append((x, y, text))
+                        except tk.TclError:
+                            pass
+                except tk.TclError:
+                    pass
+
+            # Check for widgets that change context unexpectedly
+            if widget_class in ["Button", "Checkbutton", "Radiobutton"]:
+                # Check if widget has focus event bindings that might change context
+                try:
+                    bindings = widget.bind()
+                    if "<FocusIn>" in str(bindings) or "<FocusOut>" in str(bindings):
+                        self.issues.append(
+                            AccessibilityIssue(
+                                severity=IssueSeverity.INFO,
+                                category=ValidationCategory.UNDERSTANDABLE,
+                                title="Widget has focus event bindings",
+                                description=f"{widget_class} has focus bindings that "
+                                f"might change context",
+                                widget=widget,
+                                widget_class=widget_class,
+                                widget_path=current_path,
+                                recommendation="Ensure focus events don't "
+                                "unexpectedly change context",
+                                wcag_criterion="3.2.1 On Focus",
+                                auto_fixable=False,
+                            )
+                        )
+                except tk.TclError:
+                    pass
+
+            # Check children
+            try:
+                for child in widget.winfo_children():
+                    check_widget(child, current_path)
+            except tk.TclError:
+                pass
+
+        check_widget(root)
+
+        # Check for duplicate button texts (potential confusion)
+        seen_texts = set()
+        for text in button_texts:
+            if text in seen_texts and text.strip():
+                self.issues.append(
+                    AccessibilityIssue(
+                        severity=IssueSeverity.LOW,
+                        category=ValidationCategory.UNDERSTANDABLE,
+                        title="Duplicate button text found",
+                        description=f"Multiple buttons with text '{text}' found",
+                        widget=None,
+                        widget_class="Button",
+                        widget_path="",
+                        recommendation="Use unique, descriptive button text",
+                        wcag_criterion="3.2.4 Consistent Identification",
+                        auto_fixable=False,
+                    )
+                )
+                break
+            seen_texts.add(text)
 
     def _validate_input_assistance(self, root: tk.Tk) -> None:
         """Validate input assistance (WCAG 3.3.x)"""
@@ -487,7 +849,8 @@ class AccessibilityValidator:
                             widget=widget,
                             widget_class=widget_class,
                             widget_path=current_path,
-                            recommendation="Add accessible_name or associate with label",
+                            recommendation="Add accessible_name or associate "
+                            "with label",
                             wcag_criterion="3.3.2 Labels or Instructions",
                             auto_fixable=False,
                         )
@@ -527,11 +890,13 @@ class AccessibilityValidator:
                                     severity=IssueSeverity.MEDIUM,
                                     category=ValidationCategory.ROBUST,
                                     title="Invalid ARIA role",
-                                    description=f"Role '{actual_role}' is not a valid ARIA role",
+                                    description=f"Role '{actual_role}' is not a "
+                                    f"valid ARIA role",
                                     widget=widget,
                                     widget_class=widget_class,
                                     widget_path=path,
-                                    recommendation="Use valid ARIA role or remove custom role",
+                                    recommendation="Use valid ARIA role or remove "
+                                    "custom role",
                                     wcag_criterion="4.1.1 Parsing",
                                     auto_fixable=True,
                                 )
@@ -582,7 +947,8 @@ class AccessibilityValidator:
                             widget=widget,
                             widget_class=widget_class,
                             widget_path=current_path,
-                            recommendation="Use accessible widget classes or add AccessibleMixin",
+                            recommendation="Use accessible widget classes or add "
+                            "AccessibleMixin",
                             wcag_criterion="4.1.2 Name, Role, Value",
                             auto_fixable=False,
                         )
@@ -599,8 +965,272 @@ class AccessibilityValidator:
 
     def _validate_future_compatibility(self, root: tk.Tk) -> None:
         """Validate future compatibility"""
+
         # Check for deprecated patterns or potential compatibility issues
-        pass
+        def check_widget(widget: tk.Misc, path: str = "") -> None:
+            widget_class = widget.winfo_class()
+            current_path = f"{path}/{widget_class}" if path else widget_class
+
+            # Check for deprecated Tkinter patterns
+            deprecated_options = ["bd", "highlightcolor", "selectcolor"]
+            for option in deprecated_options:
+                try:
+                    value = widget.cget(option)
+                    if value:
+                        self.issues.append(
+                            AccessibilityIssue(
+                                severity=IssueSeverity.INFO,
+                                category=ValidationCategory.ROBUST,
+                                title=f"Deprecated option '{option}' used",
+                                description=f"Widget uses deprecated option '{option}'",
+                                widget=widget,
+                                widget_class=widget_class,
+                                widget_path=current_path,
+                                recommendation=f"Consider using modern alternatives "
+                                f"to '{option}'",
+                                wcag_criterion="4.1.1 Parsing",
+                                auto_fixable=False,
+                            )
+                        )
+                except tk.TclError:
+                    pass
+
+            # Check for missing modern accessibility features
+            if not hasattr(widget, "accessible_name") and widget_class in [
+                "Button",
+                "Entry",
+                "Text",
+                "Checkbutton",
+                "Radiobutton",
+                "Scale",
+                "Listbox",
+                "Scrollbar",
+                "Spinbox",
+            ]:
+                self.issues.append(
+                    AccessibilityIssue(
+                        severity=IssueSeverity.MEDIUM,
+                        category=ValidationCategory.ROBUST,
+                        title="Widget lacks modern accessibility features",
+                        description=f"{widget_class} doesn't use accessibility mixins",
+                        widget=widget,
+                        widget_class=widget_class,
+                        widget_path=current_path,
+                        recommendation="Upgrade to accessible widget classes",
+                        wcag_criterion="4.1.2 Name, Role, Value",
+                        auto_fixable=False,
+                    )
+                )
+
+            # Check children
+            try:
+                for child in widget.winfo_children():
+                    check_widget(child, current_path)
+            except tk.TclError:
+                pass
+
+        check_widget(root)
+
+    def _validate_widget_hierarchy(self, root: tk.Tk) -> None:
+        """Validate proper widget hierarchy and structure"""
+
+        def check_widget(widget: tk.Misc, depth: int = 0, path: str = "") -> None:
+            widget_class = widget.winfo_class()
+            current_path = f"{path}/{widget_class}" if path else widget_class
+
+            # Check for excessive nesting depth
+            if depth > 10:
+                self.issues.append(
+                    AccessibilityIssue(
+                        severity=IssueSeverity.LOW,
+                        category=ValidationCategory.ROBUST,
+                        title="Excessive widget nesting",
+                        description=f"Widget hierarchy is {depth} levels deep",
+                        widget=widget,
+                        widget_class=widget_class,
+                        widget_path=current_path,
+                        recommendation="Consider flattening widget hierarchy",
+                        wcag_criterion="4.1.1 Parsing",
+                        auto_fixable=False,
+                    )
+                )
+
+            # Check for proper container usage
+            if widget_class == "Frame" and not widget.winfo_children():
+                self.issues.append(
+                    AccessibilityIssue(
+                        severity=IssueSeverity.INFO,
+                        category=ValidationCategory.ROBUST,
+                        title="Empty container found",
+                        description="Frame widget contains no children",
+                        widget=widget,
+                        widget_class=widget_class,
+                        widget_path=current_path,
+                        recommendation="Remove empty containers or add content",
+                        wcag_criterion="4.1.1 Parsing",
+                        auto_fixable=True,
+                    )
+                )
+
+            # Check children
+            try:
+                for child in widget.winfo_children():
+                    check_widget(child, depth + 1, current_path)
+            except tk.TclError:
+                pass
+
+        check_widget(root)
+
+    def _validate_error_handling(self, root: tk.Tk) -> None:
+        """Validate error handling and user feedback"""
+
+        def check_widget(widget: tk.Misc, path: str = "") -> None:
+            widget_class = widget.winfo_class()
+            current_path = f"{path}/{widget_class}" if path else widget_class
+
+            # Check Entry widgets for validation
+            if widget_class in ["Entry", "Spinbox"]:
+                # Check if widget has validation
+                try:
+                    validate_cmd = widget.cget("validate")
+                    if not validate_cmd or validate_cmd == "none":
+                        self.issues.append(
+                            AccessibilityIssue(
+                                severity=IssueSeverity.LOW,
+                                category=ValidationCategory.UNDERSTANDABLE,
+                                title="Input field lacks validation",
+                                description=f"{widget_class} has no input validation",
+                                widget=widget,
+                                widget_class=widget_class,
+                                widget_path=current_path,
+                                recommendation="Add input validation and error "
+                                "messages",
+                                wcag_criterion="3.3.1 Error Identification",
+                                auto_fixable=False,
+                            )
+                        )
+                except tk.TclError:
+                    pass
+
+            # Check children
+            try:
+                for child in widget.winfo_children():
+                    check_widget(child, current_path)
+            except tk.TclError:
+                pass
+
+        check_widget(root)
+
+    def _validate_responsive_design(self, root: tk.Tk) -> None:
+        """Validate responsive design aspects"""
+
+        def check_widget(widget: tk.Misc, path: str = "") -> None:
+            widget_class = widget.winfo_class()
+            current_path = f"{path}/{widget_class}" if path else widget_class
+
+            # Check for fixed sizes that might not scale
+            try:
+                width = widget.cget("width")
+                height = widget.cget("height")
+
+                if isinstance(width, int) and width > 0:
+                    if width < 44:  # Minimum touch target size
+                        self.issues.append(
+                            AccessibilityIssue(
+                                severity=IssueSeverity.MEDIUM,
+                                category=ValidationCategory.OPERABLE,
+                                title="Widget too small for touch interaction",
+                                description=f"{widget_class} width {width} is below "
+                                f"minimum 44px",
+                                widget=widget,
+                                widget_class=widget_class,
+                                widget_path=current_path,
+                                recommendation="Increase widget size to at least "
+                                "44x44 pixels",
+                                wcag_criterion="2.5.5 Target Size",
+                                auto_fixable=True,
+                            )
+                        )
+
+                if isinstance(height, int) and height > 0:
+                    if height < 44:  # Minimum touch target size
+                        self.issues.append(
+                            AccessibilityIssue(
+                                severity=IssueSeverity.MEDIUM,
+                                category=ValidationCategory.OPERABLE,
+                                title="Widget too small for touch interaction",
+                                description=f"{widget_class} height {height} is below "
+                                f"minimum 44px",
+                                widget=widget,
+                                widget_class=widget_class,
+                                widget_path=current_path,
+                                recommendation="Increase widget size to at least "
+                                "44x44 pixels",
+                                wcag_criterion="2.5.5 Target Size",
+                                auto_fixable=True,
+                            )
+                        )
+            except tk.TclError:
+                pass
+
+            # Check children
+            try:
+                for child in widget.winfo_children():
+                    check_widget(child, current_path)
+            except tk.TclError:
+                pass
+
+        check_widget(root)
+
+    def _validate_internationalization(self, root: tk.Tk) -> None:
+        """Validate internationalization and localization support"""
+
+        def check_widget(widget: tk.Misc, path: str = "") -> None:
+            widget_class = widget.winfo_class()
+            current_path = f"{path}/{widget_class}" if path else widget_class
+
+            # Check for hardcoded text that should be localized
+            try:
+                text = widget.cget("text")
+                if text and isinstance(text, str):
+                    # Check for English-specific patterns
+                    english_patterns = [
+                        "OK",
+                        "Cancel",
+                        "Yes",
+                        "No",
+                        "Submit",
+                        "Close",
+                        "Save",
+                        "Open",
+                        "Delete",
+                    ]
+                    if text in english_patterns:
+                        self.issues.append(
+                            AccessibilityIssue(
+                                severity=IssueSeverity.INFO,
+                                category=ValidationCategory.UNDERSTANDABLE,
+                                title="Hardcoded text found",
+                                description=f"Widget contains hardcoded text: '{text}'",
+                                widget=widget,
+                                widget_class=widget_class,
+                                widget_path=current_path,
+                                recommendation="Use localization system for text",
+                                wcag_criterion="3.1.2 Language of Parts",
+                                auto_fixable=False,
+                            )
+                        )
+            except tk.TclError:
+                pass
+
+            # Check children
+            try:
+                for child in widget.winfo_children():
+                    check_widget(child, current_path)
+            except tk.TclError:
+                pass
+
+        check_widget(root)
 
     def generate_report(self) -> Dict[str, Any]:
         """Generate comprehensive accessibility report"""
@@ -689,7 +1319,7 @@ class AccessibilityValidator:
                                 max(12, current_font[1]),
                                 *current_font[2:],
                             )
-                            issue.widget.configure(font=new_font)  # type: ignore[call-arg]
+                            issue.widget.configure(font=new_font)
                             fixed_count += 1
                     except (tk.TclError, AttributeError):
                         pass
@@ -700,7 +1330,7 @@ class AccessibilityValidator:
                 ):
                     # Enable keyboard focus
                     try:
-                        issue.widget.configure(takefocus=True)  # type: ignore[call-arg]
+                        issue.widget.configure(takefocus=True)
                         fixed_count += 1
                     except (tk.TclError, AttributeError):
                         pass
@@ -718,7 +1348,61 @@ class AccessibilityValidator:
                                 current_font[1] if len(current_font) > 1 else 12,
                                 *current_font[2:],
                             )
-                            issue.widget.configure(font=new_font)  # type: ignore[call-arg]
+                            issue.widget.configure(font=new_font)
+                            fixed_count += 1
+                    except (tk.TclError, AttributeError):
+                        pass
+
+                elif "empty container" in issue.title.lower():
+                    # Remove empty containers
+                    try:
+                        if issue.widget and not issue.widget.winfo_children():
+                            issue.widget.destroy()
+                            fixed_count += 1
+                    except (tk.TclError, AttributeError):
+                        pass
+
+                elif (
+                    "too small" in issue.title.lower() and "touch" in issue.description
+                ):
+                    # Increase widget size for touch targets
+                    try:
+                        current_width = issue.widget.cget("width")
+                        current_height = issue.widget.cget("height")
+
+                        new_width = (
+                            max(44, current_width)
+                            if isinstance(current_width, int)
+                            else current_width
+                        )
+                        new_height = (
+                            max(44, current_height)
+                            if isinstance(current_height, int)
+                            else current_height
+                        )
+
+                        if new_width != current_width:
+                            issue.widget.configure(width=new_width)
+                            fixed_count += 1
+                        if new_height != current_height:
+                            issue.widget.configure(height=new_height)
+                            fixed_count += 1
+                    except (tk.TclError, AttributeError):
+                        pass
+
+                elif "bright red background" in issue.title.lower():
+                    # Change problematic red background
+                    try:
+                        issue.widget.configure(bg="#cc0000")  # Darker red
+                        fixed_count += 1
+                    except (tk.TclError, AttributeError):
+                        pass
+
+                elif "invalid aria role" in issue.title.lower():
+                    # Remove invalid ARIA role
+                    try:
+                        if hasattr(issue.widget, "accessible_role"):
+                            issue.widget.accessible_role = None
                             fixed_count += 1
                     except (tk.TclError, AttributeError):
                         pass
@@ -742,7 +1426,7 @@ class AccessibilityTester:
         print("Running accessibility audit...")
 
         start_time = time.time()
-        issues = self.validator.validate_application(self.root)
+        self.validator.validate_application(self.root)
         end_time = time.time()
 
         report = self.validator.generate_report()
@@ -758,8 +1442,41 @@ class AccessibilityTester:
         # This would implement interactive keyboard navigation testing
         # For now, return basic validation
         def check_widget(widget: tk.Misc) -> None:
-            nav_errors = validate_keyboard_navigation(widget)
-            issues.extend(nav_errors)
+            # Basic keyboard navigation validation without recursion
+            widget_class = widget.winfo_class()
+
+            # Check if widget can receive focus
+            try:
+                takefocus = widget.cget("takefocus")
+                if takefocus == 0:
+                    issues.append(
+                        f"Widget {widget_class} cannot receive keyboard focus"
+                    )
+            except tk.TclError:
+                pass
+
+            # Check for keyboard bindings on interactive widgets
+            interactive_widgets = [
+                "Button",
+                "Entry",
+                "Text",
+                "Listbox",
+                "Scale",
+                "Checkbutton",
+                "Radiobutton",
+                "Menu",
+            ]
+            if widget_class in interactive_widgets:
+                bindings = widget.bind()
+                key_bindings = [
+                    b
+                    for b in bindings
+                    if any(key in b for key in ["<Key", "<Return", "<Tab", "<Space"])
+                ]
+                if not key_bindings:
+                    issues.append(
+                        f"Interactive widget {widget_class} lacks keyboard bindings"
+                    )
 
             try:
                 for child in widget.winfo_children():
@@ -860,13 +1577,49 @@ def run_accessibility_audit(root: tk.Tk) -> Dict[str, Any]:
     return tester.run_full_audit()
 
 
-def test_keyboard_navigation(root: tk.Tk) -> List[str]:
-    """Test keyboard navigation"""
-    tester = AccessibilityTester(root)
-    return tester.test_keyboard_navigation()
+def validate_keyboard_navigation_local(root: tk.Tk) -> List[str]:
+    """Test keyboard navigation without recursion"""
+    issues = []
+
+    def check_widget_navigation(widget: tk.Misc) -> None:
+        widget_class = widget.winfo_class()
+
+        # Check if widget can receive focus
+        try:
+            takefocus = widget.cget("takefocus")
+            if takefocus == 0 and widget_class in [
+                "Button",
+                "Entry",
+                "Text",
+                "Listbox",
+            ]:
+                issues.append(f"Interactive widget {widget_class} cannot receive focus")
+        except tk.TclError:
+            pass
+
+        # Check for basic keyboard accessibility
+        if widget_class in ["Button", "Entry", "Text", "Listbox", "Scale"]:
+            try:
+                bindings = widget.bind()
+                if not any("<Key" in b or "<Return>" in b for b in bindings):
+                    issues.append(
+                        f"Widget {widget_class} may lack keyboard accessibility"
+                    )
+            except tk.TclError:
+                pass
+
+        # Recursively check children
+        try:
+            for child in widget.winfo_children():
+                check_widget_navigation(child)
+        except tk.TclError:
+            pass
+
+    check_widget_navigation(root)
+    return issues
 
 
-def test_screen_reader_compatibility(root: tk.Tk) -> Dict[str, Any]:
+def validate_screen_reader_compatibility(root: tk.Tk) -> Dict[str, Any]:
     """Test screen reader compatibility"""
     tester = AccessibilityTester(root)
     return tester.test_screen_reader_compatibility()

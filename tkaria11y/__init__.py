@@ -59,7 +59,6 @@ from .aria_compliance import (
     validate_aria_compliance,
     calculate_contrast_ratio,
     validate_contrast_ratio,
-    validate_keyboard_navigation,
 )
 
 # Enhanced mixins
@@ -80,8 +79,8 @@ from .accessibility_validator import (
     validate_accessibility,
     auto_fix_accessibility_issues,
     run_accessibility_audit,
-    test_keyboard_navigation,
-    test_screen_reader_compatibility,
+    validate_keyboard_navigation,
+    validate_screen_reader_compatibility,
 )
 
 # Braille display support
@@ -220,8 +219,8 @@ __all__ = [
     "validate_accessibility",
     "auto_fix_accessibility_issues",
     "run_accessibility_audit",
-    "test_keyboard_navigation",
-    "test_screen_reader_compatibility",
+    "validate_keyboard_navigation",
+    "validate_screen_reader_compatibility",
     # Braille display support
     "get_braille_manager",
     "setup_braille_support",
@@ -344,7 +343,8 @@ def quick_accessibility_audit(root):
         summary["recommendations"].append("Address high priority accessibility issues")
     if summary["auto_fixable_count"] > 0:
         summary["recommendations"].append(
-            f"Run auto_fix_accessibility_issues() to fix {summary['auto_fixable_count']} issues automatically"
+            f"Run auto_fix_accessibility_issues() to fix "
+            f"{summary['auto_fixable_count']} issues automatically"
         )
 
     return summary
@@ -373,16 +373,16 @@ Key Features:
 Quick Start:
     import tkinter as tk
     from tkaria11y import AccessibleApp, AccessibleButton, setup_full_accessibility
-    
+
     root = AccessibleApp()
     setup_full_accessibility(root, high_contrast=True, dyslexic_font=True)
-    
-    button = AccessibleButton(root, 
+
+    button = AccessibleButton(root,
                              text="Click me",
                              accessible_name="Main action button",
                              accessible_description="Performs the primary action")
     button.pack()
-    
+
     root.mainloop()
 
 For comprehensive documentation, see: https://github.com/your-repo/tkaria11y

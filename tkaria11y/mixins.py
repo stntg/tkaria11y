@@ -14,7 +14,7 @@ Enhanced AccessibleMixin providing comprehensive accessibility features:
 import tkinter as tk
 import threading
 import time
-from typing import Any, Dict, Optional, Set, List, Callable, Union
+from typing import Any, Dict, List, Callable
 from .a11y_engine import speak
 from .platform_adapter import (
     set_accessible_name,
@@ -141,44 +141,62 @@ class AccessibleMixin:
 
     def _bind_accessibility_events(self) -> None:
         """Bind accessibility-related events"""
-        # Focus events
-        self.bind("<FocusIn>", self._on_focus_in, add="+")  # type: ignore
-        self.bind("<FocusOut>", self._on_focus_out, add="+")  # type: ignore
+        # Try to bind focus events first - these are critical for accessibility
+        focus_events_bound = False
+        try:
+            self.bind("<FocusIn>", self._on_focus_in, add="+")  # type: ignore
+            self.bind("<FocusOut>", self._on_focus_out, add="+")  # type: ignore
+            focus_events_bound = True
+        except (NotImplementedError, AttributeError):
+            pass
+        
+        # Try to bind other events
+        try:
+            # Mouse events
+            self.bind("<Enter>", self._on_mouse_enter, add="+")  # type: ignore
+            self.bind("<Leave>", self._on_mouse_leave, add="+")  # type: ignore
 
-        # Mouse events
-        self.bind("<Enter>", self._on_mouse_enter, add="+")  # type: ignore
-        self.bind("<Leave>", self._on_mouse_leave, add="+")  # type: ignore
+            # State change events
+            self.bind("<Configure>", self._on_configure, add="+")  # type: ignore
 
-        # State change events
-        self.bind("<Configure>", self._on_configure, add="+")  # type: ignore
-
-        # Widget-specific events
-        self._bind_widget_specific_events()
+            # Widget-specific events
+            self._bind_widget_specific_events()
+        except (NotImplementedError, AttributeError):
+            # CustomTkinter widgets don't support traditional event binding
+            pass
+        
+        # If focus events couldn't be bound, log it for debugging
+        if not focus_events_bound:
+            print(f"Warning: Could not bind focus events for {self.__class__.__name__}")
 
     def _bind_widget_specific_events(self) -> None:
         """Bind widget-specific accessibility events"""
-        widget_class = getattr(self, "winfo_class", lambda: "")()
+        try:
+            widget_class = getattr(self, "winfo_class", lambda: "")()
 
-        if widget_class == "Button":
-            self.bind("<Button-1>", self._on_button_click, add="+")  # type: ignore
-            self.bind("<Return>", self._on_button_activate, add="+")  # type: ignore
-            self.bind("<space>", self._on_button_activate, add="+")  # type: ignore
+            if widget_class == "Button":
+                self.bind("<Button-1>", self._on_button_click, add="+")  # type: ignore
+                self.bind("<Return>", self._on_button_activate, add="+")  # type: ignore
+                self.bind("<space>", self._on_button_activate, add="+")  # type: ignore
 
-        elif widget_class in ["Checkbutton", "Radiobutton"]:
-            self.bind("<Button-1>", self._on_toggle_click, add="+")  # type: ignore
-            self.bind("<Return>", self._on_toggle_activate, add="+")  # type: ignore
-            self.bind("<space>", self._on_toggle_activate, add="+")  # type: ignore
+            elif widget_class in ["Checkbutton", "Radiobutton"]:
+                self.bind("<Button-1>", self._on_toggle_click, add="+")  # type: ignore
+                self.bind("<Return>", self._on_toggle_activate, add="+")  # type: ignore
+                self.bind("<space>", self._on_toggle_activate, add="+")  # type: ignore
 
-        elif widget_class in ["Entry", "Text"]:
-            self.bind("<KeyPress>", self._on_text_input, add="+")  # type: ignore
-            self.bind("<KeyRelease>", self._on_text_change, add="+")  # type: ignore
+            elif widget_class in ["Entry", "Text"]:
+                self.bind("<KeyPress>", self._on_text_input, add="+")  # type: ignore
+                self.bind("<KeyRelease>", self._on_text_change, add="+")  # type: ignore
 
-        elif widget_class == "Scale":
-            self.bind("<ButtonRelease-1>", self._on_scale_change, add="+")  # type: ignore
-            self.bind("<KeyRelease>", self._on_scale_change, add="+")  # type: ignore
+            elif widget_class == "Scale":
+                self.bind("<ButtonRelease-1>", self._on_scale_change, add="+")  # type: ignore
+                self.bind("<KeyRelease>", self._on_scale_change, add="+")  # type: ignore
 
-        elif widget_class == "Listbox":
-            self.bind("<<ListboxSelect>>", self._on_listbox_select, add="+")  # type: ignore
+            elif widget_class == "Listbox":
+                self.bind("<<ListboxSelect>>", self._on_listbox_select, add="+")  # type: ignore
+        except (NotImplementedError, AttributeError):
+            # CustomTkinter widgets don't support traditional event binding
+            pass
 
     def _setup_keyboard_navigation(self) -> None:
         """Setup keyboard navigation and shortcuts"""
@@ -192,8 +210,12 @@ class AccessibleMixin:
         )
 
         # Bind keyboard shortcuts
-        for key, callback in self._keyboard_shortcuts.items():
-            self.bind(key, callback, add="+")  # type: ignore
+        try:
+            for key, callback in self._keyboard_shortcuts.items():
+                self.bind(key, callback, add="+")  # type: ignore
+        except (NotImplementedError, AttributeError):
+            # CustomTkinter widgets don't support traditional event binding
+            pass
 
         # Set up arrow key navigation if supported
         widget_class = getattr(self, "winfo_class", lambda: "")()
@@ -240,8 +262,6 @@ class AccessibleMixin:
 
     def _validate_accessibility(self) -> None:
         """Validate accessibility compliance"""
-        from .aria_compliance import validate_aria_compliance
-
         try:
             role = ARIARole(self.accessible_role)
             errors = validate_aria_compliance(self, role, self._aria_properties)  # type: ignore
@@ -262,7 +282,10 @@ class AccessibleMixin:
 
             root = self.winfo_toplevel()  # type: ignore
             focus_manager = get_focus_manager(root)
-            focus_manager.register_widget(self)  # type: ignore
+            
+            # Only register if this is a focusable widget
+            if focus_manager._is_focusable_widget(self):  # type: ignore
+                focus_manager.register_widget(self)  # type: ignore
         except (AttributeError, ImportError, tk.TclError):
             # Focus manager not available or widget not ready
             pass
@@ -438,8 +461,12 @@ class AccessibleMixin:
 
         try:
             # Check disabled state
-            if self.cget("state") == "disabled":  # type: ignore
-                states.append("disabled")
+            try:
+                if self.cget("state") == "disabled":  # type: ignore
+                    states.append("disabled")
+            except (tk.TclError, ValueError):
+                # Widget doesn't support state attribute (e.g., CTkFrame and some other widgets)
+                pass
 
             # Check widget-specific states
             widget_class = getattr(self, "winfo_class", lambda: "")()

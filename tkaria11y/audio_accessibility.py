@@ -10,7 +10,7 @@ import threading
 import time
 import queue
 import math
-from typing import Dict, List, Optional, Callable, Any, Tuple, Union, TYPE_CHECKING
+from typing import Dict, List, Optional, Callable, Any, Tuple, TYPE_CHECKING
 from enum import Enum
 from dataclasses import dataclass
 
@@ -19,7 +19,6 @@ if TYPE_CHECKING:
         import numpy
     except ImportError:
         numpy = None  # type: ignore
-import os
 import sys
 
 

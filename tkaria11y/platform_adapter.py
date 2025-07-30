@@ -8,7 +8,7 @@ Provides OS-level integration for Windows (UIA), Linux (AT-SPI), and macOS (Voic
 import sys
 import threading
 import weakref
-from typing import Optional, Dict, Any, List, Union
+from typing import Optional, Dict, Any
 import tkinter as tk
 from abc import ABC, abstractmethod
 
@@ -17,7 +17,6 @@ try:
     if sys.platform.startswith("win"):
         import comtypes
         import comtypes.client
-        from comtypes import GUID
 
         WINDOWS_AVAILABLE = True
     else:

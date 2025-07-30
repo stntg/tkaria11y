@@ -20,7 +20,7 @@ from typing import Dict, Any, List, Optional
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from a11y_audit.linters import AccessibilityLinter
-from a11y_audit.config import AUDIT_CONFIG, get_report_path, REPORTS_DIR, SOURCE_DIRS
+from a11y_audit.config import get_report_path, SOURCE_DIRS
 
 
 class AccessibilityAuditRunner:

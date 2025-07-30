@@ -7,9 +7,9 @@ Provides full WCAG 2.1 compliance with ARIA roles, properties, and platform inte
 
 import tkinter as tk
 import tkinter.ttk as ttk
-from typing import Dict, Tuple, Type, Any, Optional, Union, List
+from typing import Dict, Tuple, Type, Optional, List
 from .mixins import AccessibleMixin
-from .aria_compliance import ARIARole, get_default_role
+from .aria_compliance import get_default_role
 
 # Try to import CustomTkinter if available
 try:
@@ -105,6 +105,7 @@ _WIDGET_MAP: Dict[str, Tuple[str, Type[tk.Widget]]] = {
     "TTKTreeview": ("tree", ttk.Treeview),
     "TTKCombobox": ("combobox", ttk.Combobox),
     "TTKSpinbox": ("spinbutton", ttk.Spinbox),
+    "TTKPanedWindow": ("group", ttk.PanedWindow),
 }
 
 # Add CustomTkinter widgets if available
@@ -537,3 +538,42 @@ def enhance_existing_widgets(root: tk.Widget) -> None:
         # Enhance widget if it needs accessibility
         if role.value != "none" and name:
             enhance_widget_accessibility(widget, name, role=role.value)
+
+
+# Import CustomTkinter accessible widgets from dedicated module
+try:
+    # Import enhanced CTK widgets (wrappers with better functionality)
+    from .ctk_wrappers import (
+        AccessibleCTKButton,
+        AccessibleCTKEntry,
+        CTK_AVAILABLE
+    )
+    
+    # Import remaining CTK widgets from old system
+    from .ctk_widgets import (
+        AccessibleCTKFrame,
+        AccessibleCTKLabel,
+        AccessibleCTKCheckBox,
+        AccessibleCTKRadioButton,
+        AccessibleCTKSlider,
+        AccessibleCTKTabview,
+        AccessibleCTKScrollableFrame,
+    )
+    
+    # Add CTK widgets to __all__
+    if CTK_AVAILABLE:
+        __all__.extend([
+            "AccessibleCTKFrame",
+            "AccessibleCTKButton", 
+            "AccessibleCTKEntry",
+            "AccessibleCTKLabel",
+            "AccessibleCTKCheckBox",
+            "AccessibleCTKRadioButton",
+            "AccessibleCTKSlider",
+            "AccessibleCTKTabview",
+            "AccessibleCTKScrollableFrame"
+        ])
+
+except ImportError:
+    # CTK widgets not available
+    CTK_AVAILABLE = False

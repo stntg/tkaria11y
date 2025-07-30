@@ -9,7 +9,7 @@ import tkinter as tk
 import threading
 import time
 import queue
-from typing import Dict, List, Optional, Callable, Any, Tuple
+from typing import Dict, List, Optional, Callable, Any
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
@@ -55,7 +55,7 @@ class BrailleCell:
             return cls(0)
 
         # Convert character to braille using basic ASCII mapping
-        ascii_val = ord(char.upper())
+        char = char.upper()
 
         # Basic braille mapping for common characters
         braille_map = {
@@ -249,7 +249,7 @@ class GenericBrailleDisplay(BrailleDisplay):
 
     def _dots_to_char(self, dots: int) -> str:
         """Convert dot pattern back to character (approximate)"""
-        # Reverse mapping for common patterns
+        # Reverse mapping for common patterns (letters take precedence)
         reverse_map = {
             0x01: "A",
             0x03: "B",
@@ -286,15 +286,6 @@ class GenericBrailleDisplay(BrailleDisplay):
             0x24: "-",
             0x2F: "(",
             0x2A: "0",
-            0x01: "1",
-            0x03: "2",
-            0x09: "3",
-            0x19: "4",
-            0x11: "5",
-            0x0B: "6",
-            0x1B: "7",
-            0x13: "8",
-            0x0A: "9",
         }
 
         return reverse_map.get(dots, "?")

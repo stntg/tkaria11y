@@ -8,7 +8,6 @@ This module provides tools to integrate accessibility audits into
 continuous integration and deployment pipelines.
 """
 
-import os
 import yaml
 from pathlib import Path
 from typing import Dict, Any, List
@@ -50,13 +49,17 @@ class GitHubActionsIntegration:
                             "run": """
                                 python -m pip install --upgrade pip
                                 pip install flake8 pylint mypy
-                                pip install flake8-docstrings flake8-import-order flake8-naming
+                                pip install flake8-docstrings flake8-import-order \\
+                                    flake8-naming
                                 pip install -e .
                             """,
                         },
                         {
                             "name": "Run accessibility audit",
-                            "run": "python a11y_audit/run_audit.py --fail-on-error --format json",
+                            "run": (
+                                "python a11y_audit/run_audit.py "
+                                "--fail-on-error --format json"
+                            ),
                         },
                         {
                             "name": "Upload audit results",
